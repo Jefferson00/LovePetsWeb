@@ -1,0 +1,42 @@
+.container{
+    height: 3.25rem;
+    width: 100%;
+    background: #12BABA;
+    border: 0.5px solid #12BABA;
+    padding: 0 1.125rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.2s;
+
+    & + button{
+        margin-top: 1rem;
+    }
+
+    &[title=google]{
+        border: 2px solid #EA4335;
+        background: #ffffff;
+        color: #EA4335;
+        font-weight: bold;
+    }
+
+    &[title=facebook]{
+        border: 2px solid  #1877F2;
+        background: #ffffff;
+        color:  #1877F2;
+        font-weight: bold;
+    }
+
+    img{
+        height: 2.37rem;
+        width: 2.37rem;
+        margin-right: 1rem;
+    }
+
+    &:hover{
+        filter: brightness(0.9);
+    }
+
+}

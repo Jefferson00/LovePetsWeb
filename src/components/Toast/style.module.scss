@@ -1,0 +1,44 @@
+.container{
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 2rem;
+    overflow: hidden;
+
+    .toast{
+        position: relative;
+        padding: 1rem 2rem 1rem 1rem;
+        border-radius: 10px;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+
+        & + div{
+            margin-top: 0.5rem;
+        }
+
+        > svg{
+            margin: 4px 12px 0 0; //mudar para rem
+        }
+
+        div{
+            flex: 1;
+
+            p{
+                margin-top: 4px; //
+                font-size: 0.75rem;
+                opacity: 0.8;
+                line-height: 20px; //
+            }
+        }
+
+        button {
+            position: absolute;
+            right: 1rem;
+            top: 1.2rem;
+            opacity: 0.6;
+            border: 0;
+            background: transparent;
+            color: inherit;
+        }
+    }
+}

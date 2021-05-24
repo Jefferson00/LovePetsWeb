@@ -1,0 +1,71 @@
+.container{
+    background: #FFFFFF;
+    border: 0.5px solid #BABABA;
+    padding: 0 1.125rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    
+    & + div{
+        margin-top: 1rem;
+    }
+    
+    input{
+        flex: 1;
+        background: transparent;
+        border: 0;
+        padding: 1.125rem 0;
+        outline: transparent;
+        color: #350808;
+        
+        &::placeholder{
+            color: #A8A8A8;
+        }  
+
+    }
+
+    svg{
+        margin-right: 1rem;
+        color: #A8A8A8;
+    }
+
+    .error{
+        margin-left: 1rem;
+        position: relative;
+
+        svg{
+            margin: 0;
+        }
+
+        span{
+           background:  #BA1212; 
+           padding: 0.5rem;
+           border-radius: 4px;
+           font-size: 0.75rem;
+           font-weight: bold;
+           opacity: 0;
+           transition: opacity 0.2s;
+           position: absolute;
+           width: 10rem;
+           bottom: calc(100% + 0.75rem);
+           left: 50%;
+           transform: translateX(-50%);
+           color: #f2f2f2;
+
+           &::before{
+               content: '';
+               border-style: solid;
+               border-width: 6px 6px 0 6px;
+               border-color: #BA1212 transparent;
+               top: 100%;
+               position: absolute;
+               left: 50%;
+               transform: translateX(-50%);
+           }
+        }
+
+        &:hover span{
+            opacity: 1;
+        }
+    }
+}
