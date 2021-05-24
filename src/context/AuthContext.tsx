@@ -1,7 +1,15 @@
-import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 import {createContext, useCallback, useContext, useEffect, useState} from 'react';
 import api from '../services/api';
+import firebase from '../lib/firebase';
+
+interface AuthResponseProps extends firebase.auth.AuthCredential{
+    accessToken:string;
+}
+
+interface ResponseFirebaseProps extends firebase.auth.UserCredential{
+    credential: AuthResponseProps | null;
+}
+
 
 interface AuthState{
     token: string;
@@ -21,6 +29,8 @@ interface AuthContextData{
     signOut: () => void;
     handleToSignUp: () => void;
     handleToSignIn: () => void;
+    signInGoogle: () => void;
+    signInFacebook: () => void;
 }
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -76,6 +86,46 @@ export const AuthProvider = ({children}) => {
         setFormState('signIn');
     },[])
 
+    const signInGoogle = useCallback(() =>{
+        try {
+            setLoading(true);
+            return firebase
+            .auth()
+            .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+            .then((response : ResponseFirebaseProps) => {
+                const token = response.credential.accessToken;
+                const user = response.user;
+
+                localStorage.setItem('@LovePetsBeta:token', token);
+                localStorage.setItem('@LovePetsBeta:user', JSON.stringify(user));
+
+                setAuthData({token, user});
+            });
+        } finally {
+            setLoading(false);
+        }
+    },[])
+
+    const signInFacebook = useCallback(() =>{
+        try {
+            setLoading(true);
+            return firebase
+            .auth()
+            .signInWithPopup(new firebase.auth.FacebookAuthProvider())
+            .then((response : ResponseFirebaseProps) => {
+                const token = response.credential.accessToken;
+                const user = response.user;
+
+                localStorage.setItem('@LovePetsBeta:token', token);
+                localStorage.setItem('@LovePetsBeta:user', JSON.stringify(user));
+
+                setAuthData({token, user});
+            });
+        } finally {
+            setLoading(false);
+        }
+    },[])
+
     return(
         <AuthContext.Provider value={{
             user: authData.user,
@@ -84,6 +134,8 @@ export const AuthProvider = ({children}) => {
             signOut,
             handleToSignIn,
             handleToSignUp,
+            signInGoogle,
+            signInFacebook,
             formState,
         }}>
             {children}

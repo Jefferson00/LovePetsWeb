@@ -17,7 +17,7 @@ interface SignInFormData{
 
 export default function FormSignIn() {
     const formRef = useRef<FormHandles>(null)
-    const {signIn, handleToSignUp} = useContext(AuthContext);
+    const {signIn, handleToSignUp, signInGoogle, signInFacebook} = useContext(AuthContext);
     const {addToast} = useContext(ToastContext);
 
     const handleSubmit = useCallback(async (data : SignInFormData)=>{
@@ -92,12 +92,12 @@ export default function FormSignIn() {
             <FiLogIn/>
           </a>
 
-          <Button type="button" title="google">
+          <Button type="button" title="google" onClick={signInGoogle}>
               <img src="/Google.svg" alt="gmail" />
               Entrar com o Gmail
           </Button>
 
-          <Button type="button" title="facebook">
+          <Button type="button" title="facebook" onClick={signInFacebook}>
               <img src="/Facebook.svg" alt="facebook" />
               Entrar com o Facebook
           </Button>
