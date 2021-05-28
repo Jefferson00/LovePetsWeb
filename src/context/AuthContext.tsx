@@ -23,12 +23,13 @@ interface SignInCredentials {
 
 interface AuthContextData{
     user: object;
-    formState: 'signIn' | 'signUp';
+    formState: 'signIn' | 'signUp' | 'forgot';
     loading:boolean;
     signIn: (credentials : SignInCredentials) => Promise<void>;
     signOut: () => void;
     handleToSignUp: () => void;
     handleToSignIn: () => void;
+    handleToForgotPassword: () => void;
     signInGoogle: () => void;
     signInFacebook: () => void;
 }
@@ -38,7 +39,7 @@ export const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 export const AuthProvider = ({children}) => {
     const [authData, setAuthData] = useState<AuthState>({} as AuthState);
     const [loading, setLoading] = useState(true);
-    const [formState, setFormState] = useState<'signIn' | 'signUp'>('signIn');
+    const [formState, setFormState] = useState<'signIn' | 'signUp' | 'forgot'>('signIn');
 
     useEffect(()=>{
         const token = localStorage.getItem('@LovePetsBeta:token');
@@ -84,6 +85,10 @@ export const AuthProvider = ({children}) => {
 
     const handleToSignIn = useCallback(() =>{
         setFormState('signIn');
+    },[]);
+
+    const handleToForgotPassword = useCallback(() =>{
+        setFormState('forgot');
     },[])
 
     const signInGoogle = useCallback(() =>{
@@ -134,6 +139,7 @@ export const AuthProvider = ({children}) => {
             signOut,
             handleToSignIn,
             handleToSignUp,
+            handleToForgotPassword,
             signInGoogle,
             signInFacebook,
             formState,

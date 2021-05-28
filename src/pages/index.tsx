@@ -6,6 +6,7 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 import { useRouter } from 'next/router';
+import FormForgotPassword from '../components/Form/FormForgotPassword';
 
 
 export default function Home() {
@@ -30,6 +31,7 @@ export default function Home() {
      <section className={styles.formContainer}>
        {formState === 'signIn' && <FormSignIn/>}
        {formState === 'signUp' && <FormSignUp/>}
+       {formState === 'forgot' && <FormForgotPassword/>}
      </section>
 
      <section className={styles.contentContainer}>
@@ -38,6 +40,7 @@ export default function Home() {
         <p>Amor aos animais</p>
 
         {formState === 'signIn' && <img src="/pets.svg" alt="pets" />}
+        {formState === 'forgot' && <img src="/pets.svg" alt="pets" />}
         {formState === 'signUp' && <img src="/pets2.svg" alt="pets" />}
 
         <div>

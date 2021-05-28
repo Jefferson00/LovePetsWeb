@@ -1,40 +1,47 @@
 import styles from '../../styles/Home.module.scss';
 import { FormHandles } from "@unform/core"
-import { useCallback, useContext, useRef } from "react"
+import { useCallback, useContext, useRef, useState } from "react"
 import { AuthContext } from "../../context/AuthContext";
 import { ToastContext } from "../../context/ToastContext";
 import getValidationErrors from "../../utils/getValidationErrors";
 import * as Yup from 'yup';
 import { Form } from "@unform/web";
 import Input from "../Input";
-import { FiLock, FiLogIn, FiMail } from "react-icons/fi";
+import { FiLogIn, FiMail } from "react-icons/fi";
 import Button from "../Button";
+import api from '../../services/api';
 
 interface SignInFormData{
     email: string;
-    password: string;
 }
 
-export default function FormSignIn() {
+export default function FormForgotPassword() {
     const formRef = useRef<FormHandles>(null)
-    const {signIn, handleToSignUp, handleToForgotPassword, signInGoogle, signInFacebook} = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
+    const {handleToSignIn} = useContext(AuthContext);
     const {addToast} = useContext(ToastContext);
 
     const handleSubmit = useCallback(async (data : SignInFormData)=>{
         try {
+          setLoading(true);
           formRef.current?.setErrors({});
           const schema = Yup.object().shape({
             email: Yup.string().required('E-mail obrigatório!').email('Digite um e-mail válido'),
-            password: Yup.string().required('Senha obrigatória'),
           })
     
           await schema.validate(data, {
             abortEarly: false,
           });
     
-          await signIn({
+          //recupera
+          await api.post('/password/forgot', {
             email: data.email,
-            password: data.password,
+          })
+
+          addToast({
+            type: 'success',
+            title: 'E-mail de recuperação enviado',
+            message: 'E-mail de recuperação de senha enviado, cheque sua caixa de entrada.'
           });
         } catch (error) {
           if (error instanceof Yup.ValidationError){
@@ -44,7 +51,7 @@ export default function FormSignIn() {
 
             addToast({
               type: 'error',
-              title: 'Erro na autenticação',
+              title: 'Erro na recuperação da senha',
               message: 'Preencha todos os campos corretamente.',
             })
 
@@ -53,9 +60,11 @@ export default function FormSignIn() {
     
           addToast({
             type: 'error',
-            title: 'Erro na autenticação',
-            message: 'Ocorreu um erro no login, tente novamente.',
+            title: 'Erro na recuperação da senha',
+            message: 'Ocorreu um erro na recuperação da senha, tente novamente.',
           })
+        }finally{
+          setLoading(false);
         }
       },[addToast])
 
@@ -64,7 +73,7 @@ export default function FormSignIn() {
           <img src="/logo.svg" alt="love pets" />
 
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <strong>Login</strong>
+            <strong>Recuperar senha</strong>
 
             <Input 
               name="email" 
@@ -72,36 +81,19 @@ export default function FormSignIn() {
               placeholder="e-mail" 
               icon={FiMail}
             />
-            <Input 
-              name="password" 
-              type="password" 
-              placeholder="senha" 
-              icon={FiLock}
-            />
 
-            <a onClick={handleToForgotPassword}>Esqueci minha senha</a>
-
-            <Button type="submit">
-              Entrar
-            </Button>
+            <div className={styles.buttonContainer}>
+              <Button loading={loading} type="submit">
+                Recuperar
+              </Button>
+            </div>
 
           </Form>
 
-          <a onClick={handleToSignUp}>
-            Não tem uma conta? <strong>Cadastre-se</strong>
+          <a onClick={handleToSignIn}>
+            Voltar para <strong>Login</strong>
             <FiLogIn/>
           </a>
-
-          <Button type="button" title="google" onClick={signInGoogle}>
-              <img src="/Google.svg" alt="gmail" />
-              Entrar com o Gmail
-          </Button>
-
-          <Button type="button" title="facebook" onClick={signInFacebook}>
-              <img src="/Facebook.svg" alt="facebook" />
-              Entrar com o Facebook
-          </Button>
-
         </div>
     )
 }

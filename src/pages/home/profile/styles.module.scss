@@ -1,0 +1,79 @@
+.container{
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    
+    .profileContent{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex: 1;
+
+        a{
+            text-decoration: none;
+            &:first-child{
+                color: #12BABA;
+            }
+        }
+
+        .imageContainer{
+            margin-top: 2rem;
+            display: inline-flex;
+            height: 12rem;
+            width: 12rem;
+            font-size: 0;
+            border-radius: 50%;
+            border: 1px solid #ababab;
+
+            img{
+                object-fit: contain;
+            }
+        }
+
+        .linksContainer{
+            margin-top: 2rem;
+            a{
+                font-weight: 600;
+                color: #5E5E5E;
+
+                & + a {
+                    margin-left: 2.87rem;
+                }
+            }
+        }
+
+        .userInformations{
+            margin-top: 2rem;
+
+            .nameContainer{
+                text-align: center;
+                strong{
+                    font-size: 1.5rem;
+                    color: #BA1212;
+                }
+                p{
+                    color: #ABABAB;
+                }
+            }
+
+            .infosContainer{
+                margin-top: 2rem;
+                display: flex;
+                flex-direction: column;
+                span{
+                    display: flex;
+                    align-items: center;
+                    color: #5E5E5E;
+                    p{
+                        margin-left: 1rem;
+                    }
+
+                    & + span{
+                        margin-top: 1rem;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+.container{
+    height: 5rem;
+    width: 100%;
+    background-color: #F43434;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10rem;
+
+    .logoContainer{
+        display: flex;
+
+        div{
+            display: flex;
+            flex-direction: column;
+            margin-left: 2.125rem;
+            flex: 1;
+            justify-content: center;
+            border-left: 1px solid #fff;
+            padding-left: 1rem;
+
+            p{
+                color: #ffffff;
+            }
+            strong{
+                color: #562525;
+                font-size: 1.125rem;
+                line-height: 1.75rem;
+            }
+        }
+    }
+
+    .menuContainer{
+
+        a{
+            color: #ffffff;
+            transition: all 0.2s;
+            text-decoration: none;
+            position: relative;
+
+            & + a{
+                margin-left: 1.5rem;
+            }
+
+            &:hover{
+                color: #ffc6c6;
+            }
+
+            span{
+                position: absolute;
+                bottom: -0.75rem;
+                left: 50%;
+                transform: translateX(-50%);
+                visibility: hidden;
+            }
+
+            &:hover span{
+                visibility: visible;
+            }
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect } from "react";
+import Header from "../../components/Header";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function SignUp() {
@@ -18,7 +19,7 @@ export default function SignUp() {
 
     return (
         <div>
-            <h1>teste</h1>
+            <Header/>
         </div>
     )
 }

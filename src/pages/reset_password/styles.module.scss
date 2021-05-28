@@ -1,0 +1,41 @@
+.container{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    .formContent{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        width: 32rem;
+        max-width: 700px;
+        background-color: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 50px 50px 0 0;
+        padding: 0 3.5rem;
+        height: 100%;
+
+        > img {
+            height: 5.37rem;
+            margin: 2.8rem 0;
+        }
+
+        form{
+            .labelContainer{
+                margin-bottom: 2rem;
+
+                strong{
+                    color: #9B0F0F;
+                    font-size: 1.125rem;
+                    margin-left: 1rem;
+                }
+            }
+
+    
+            .buttonContainer{
+                margin-top: 2.37rem;
+            }
+        }
+    }
+}
