@@ -6,7 +6,7 @@ import { AuthContext } from '../../context/AuthContext';
 import Link from 'next/link';
 
 export default function Header(){
-    const {signOut} = useContext(AuthContext);
+    const {signOut, user} = useContext(AuthContext);
     return(
         <div className={styles.container}>
             <div className={styles.logoContainer}>
@@ -15,7 +15,7 @@ export default function Header(){
                 <div>
                     <p>Bem vindo,</p>
                     <strong>
-                        Fulano
+                        {user.name}
                     </strong>
                 </div>
             </div>

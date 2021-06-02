@@ -1,6 +1,6 @@
 import styles from '../../styles/Home.module.scss';
 import { FormHandles } from "@unform/core"
-import { useCallback, useContext, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef } from "react"
 import { AuthContext } from "../../context/AuthContext";
 import { ToastContext } from "../../context/ToastContext";
 import getValidationErrors from "../../utils/getValidationErrors";
@@ -17,7 +17,14 @@ interface SignInFormData{
 
 export default function FormSignIn() {
     const formRef = useRef<FormHandles>(null)
-    const {signIn, handleToSignUp, handleToForgotPassword, signInGoogle, signInFacebook} = useContext(AuthContext);
+    const {
+      signIn, 
+      handleToSignUp, 
+      handleToForgotPassword, 
+      signInGoogle, 
+      signInFacebook,
+      socialAuthenticationError,
+    } = useContext(AuthContext);
     const {addToast} = useContext(ToastContext);
 
     const handleSubmit = useCallback(async (data : SignInFormData)=>{
@@ -57,7 +64,18 @@ export default function FormSignIn() {
             message: 'Ocorreu um erro no login, tente novamente.',
           })
         }
-      },[addToast])
+      },[addToast]);
+
+      useEffect(()=>{
+        console.log(socialAuthenticationError)
+        if(socialAuthenticationError){
+          addToast({
+            type: 'error',
+            title: 'Erro na autenticação',
+            message: socialAuthenticationError,
+          })
+        }
+      },[socialAuthenticationError]);
 
     return(
         <div className={styles.formContent}>
