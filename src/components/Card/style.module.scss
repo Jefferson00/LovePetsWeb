@@ -1,0 +1,148 @@
+.card{
+    background-color: #FFF;
+    border: 1px solid #BABABA;
+    border-radius: 10px;
+    width: 31.375rem;
+    max-width: 502px;
+    margin-top: 3.18rem;
+    overflow: hidden;
+
+    header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 3.125rem;
+        padding: 0 1.44rem;
+
+        span{
+            font-weight: 700;
+            color: #ABABAB;  
+        }
+
+        strong{
+            color:#000;
+            font-size: 1.125rem;
+        }
+    }
+
+    .imageContainer{
+        
+        display: flex;
+        justify-content: stretch;
+        height: 40rem;
+        position: relative;
+        img{
+            width: 100%;
+            object-fit: cover;
+            
+        }
+
+        button{
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .buttonPrev{
+            position: absolute;
+            top: 50%;
+            left: 0;
+            opacity: 0.7;
+        }
+
+        .buttonNext{
+            position: absolute;
+            top: 50%;
+            right: 0;
+            opacity: 0.7;
+        }
+    }
+
+    footer{
+        padding: 0 1.5rem;
+        .activityContainer{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 3.75rem;
+            
+
+            button{
+                border: none;
+                background: transparent;
+                cursor: pointer;
+            }
+
+            .dotsIndicators{
+              
+                span{
+                    display: inline-block;
+                    height: 0.625rem;
+                    width: 0.625rem;
+                    border-radius: 50%;
+                    background: #12BABA;
+
+                    & + span{
+                        margin-left: 0.625rem;
+                    }
+                }
+            }
+
+            .actionsButtonsContainer{
+                button{
+                    & + button{
+                        margin-left: 1.56rem;
+                    }
+                }
+            }
+        }
+
+        .descriptionContainer{
+            margin-bottom: 3.125rem;
+            p{
+                color: #656565;
+            }
+        }
+
+        .contactContainer{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.6rem;
+
+            span{
+                color: #656565;
+            }
+
+            .userInfo{
+                display: flex;
+                align-items: center;
+                margin-top: 0.625rem;
+                gap: 1rem;
+                img{
+                    width: 2.5rem;
+                    height: 2.5rem;
+                    border-radius: 50%;
+                }
+
+                button{
+                    border: none;
+                    background: transparent;
+                    cursor: pointer;
+                }
+            }
+
+            .locationInfoContainer{
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+
+                span{
+                    &:last-child{
+                        font-size: 0.75rem;
+                    }
+                }
+            }
+        }
+    }
+}
