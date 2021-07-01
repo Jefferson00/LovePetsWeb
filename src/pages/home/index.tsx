@@ -9,6 +9,8 @@ import getDistanceLocation from "../../utils/getDistanceLocation";
 import getDistanceTime from "../../utils/getDistanceTime";
 import styles from './styles.module.scss';
 
+import { IoIosArrowDropdownCircle } from 'react-icons/io';
+
 interface HomeProps {
     pets: Pets[];
 }
@@ -50,7 +52,62 @@ type Gender = 'male' | 'female';
 export default function Home(props: HomeProps) {
     const { user, loading } = useContext(AuthContext);
     const [pets, setPets] = useState<Pets[]>([]);
+    const [page, setPage] = useState(2);
+    const [hasMoreResults, setHasMoreResults] = useState(true);
     const router = useRouter();
+    let petsArr: Pets[] = [];
+
+    const setPetImages = async (petsArr: Pets[]): Promise<Pets[]> => {
+        const mapPromises = petsArr.map(async (pet) => {
+            let petsWithImages = Object.assign({}, pet)
+            petsWithImages.images = await findPetImages(pet.id);
+            petsWithImages.distanceLocation = getDistanceLocation({
+                fromLat: '-15.778189',
+                fromLon: '-48.139945',
+                toLat: pet.location_lat,
+                toLon: pet.location_lon,
+            });
+            petsWithImages.distanceTime = getDistanceTime(pet.created_at);
+
+            return petsWithImages;
+        });
+        return await Promise.all(mapPromises);
+    }
+
+    const findPetImages = async (pet_id: string): Promise<IPetImages[]> => {
+        let images: IPetImages[] = []
+        try {
+            const response = await api.get(`/images/${pet_id}`)
+            images = response.data;
+        } catch (error) {
+        }
+        return images;
+    }
+
+    const loadMorePets = async () => {
+        setPage(page + 1);
+
+        const { data } = await api.get('/pets', {
+            params: {
+                location_lat: '-15.778189',
+                location_lon: '-48.139945',
+                distance: '50',
+                species: undefined,
+                gender: undefined,
+                limit: 5,
+                skip: page,
+            }
+        });
+
+        if (data.length === 0) {
+            setHasMoreResults(false);
+        }
+
+        petsArr = data;
+        petsArr = await setPetImages(petsArr);
+
+        setPets([...pets, ...petsArr]);
+    }
 
     useEffect(() => {
         if (!user) {
@@ -78,6 +135,18 @@ export default function Home(props: HomeProps) {
                         />
                     )
                 })}
+
+                <div className={styles.loadMoreContainer}>
+                    {hasMoreResults ?
+                        <button onClick={loadMorePets}>
+                            <IoIosArrowDropdownCircle size={40} color="#12BABA" />
+                        </button>
+                        :
+                        <h4>
+                            Isso é tudo por enquanto.
+                        </h4>
+                    }
+                </div>
             </div>
         </div>
     )

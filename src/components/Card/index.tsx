@@ -9,6 +9,7 @@ import {
     IoIosArrowDroprightCircle,
     IoIosArrowDropleftCircle,
 } from 'react-icons/io';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Pets {
     id: string;
@@ -49,6 +50,48 @@ interface CardProps {
 }
 
 export default function Card({ pet }: CardProps) {
+    const imageContainer = useRef(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    useEffect(() => {
+        const images = imageContainer.current.querySelectorAll('img');
+
+        images[currentImageIndex].style.opacity = 1;
+    }, [])
+
+    const handlePrevImage = useCallback(() => {
+        const images = imageContainer.current.querySelectorAll('img');
+        const length = images.length;
+        setCurrentImageIndex(currentImageIndex - 1);
+
+        if (currentImageIndex - 1 < 0) {
+            setCurrentImageIndex(0);
+        } else {
+            let translateRate = (currentImageIndex - 1) * 100;
+            //images[currentImageIndex].style.transform = `initial`;
+            images[currentImageIndex].style.opacity = 0;
+
+            //images[currentImageIndex - 1].style.transform = `translateX(0)`;
+            images[currentImageIndex - 1].style.opacity = 1;
+        }
+    }, [imageContainer.current, currentImageIndex]);
+
+    const handleNextImage = useCallback(() => {
+        const images = imageContainer.current.querySelectorAll('img');
+        const length = images.length;
+        setCurrentImageIndex(currentImageIndex + 1);
+
+        if (currentImageIndex + 1 >= length) {
+            setCurrentImageIndex(length - 1);
+        } else {
+            let translateRate = (currentImageIndex + 1) * 100;
+            //images[currentImageIndex].style.transform = `translateX(-${translateRate}%)`;
+            images[currentImageIndex].style.opacity = 0;
+
+            //images[currentImageIndex + 1].style.transform = `translateX(-${translateRate}%)`;
+            images[currentImageIndex + 1].style.opacity = 1;
+        }
+    }, [imageContainer.current, currentImageIndex]);
 
     return (
         <div className={styles.card}>
@@ -61,18 +104,22 @@ export default function Card({ pet }: CardProps) {
                     <IoMdMale size={25} color="#129CBA" />
                 }
             </header>
-            <div className={styles.imageContainer}>
-                <button className={styles.buttonPrev}>
-                    <IoIosArrowDropleftCircle size={25} color="#797979" />
-                </button>
+            <div className={styles.imageContainer} ref={imageContainer}>
+                {(pet.images.length > 1 && currentImageIndex > 0) &&
+                    <button className={styles.buttonPrev} onClick={handlePrevImage}>
+                        <IoIosArrowDropleftCircle size={25} color="#797979" />
+                    </button>
+                }
                 {pet.images.map(image => {
                     return (
                         <img src={image.image_url} alt="pet" key={image.id} />
                     )
                 })}
-                <button className={styles.buttonNext}>
-                    <IoIosArrowDroprightCircle size={25} color="#797979" />
-                </button>
+                {(pet.images.length > 1 && (currentImageIndex + 1) < pet.images.length) &&
+                    <button className={styles.buttonNext} onClick={handleNextImage}>
+                        <IoIosArrowDroprightCircle size={25} color="#797979" />
+                    </button>
+                }
             </div>
             <footer>
                 <div className={styles.activityContainer}>
@@ -81,8 +128,14 @@ export default function Card({ pet }: CardProps) {
                     </button>
 
                     <div className={styles.dotsIndicators}>
-                        {pet.images.map(image => (
-                            <span key={image.id} />
+                        {pet.images.map((image, index) => (
+                            <>
+                                {index === currentImageIndex ?
+                                    <span key={image.id} style={{ background: '#12BABA' }} />
+                                    :
+                                    <span key={image.id} />
+                                }
+                            </>
                         ))}
                     </div>
 
