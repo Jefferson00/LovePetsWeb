@@ -1,7 +1,18 @@
 import axios from 'axios';
+import { parseCookies } from "nookies";
 
-const api = axios.create({
-    baseURL:'http://localhost:3333'
-})
+export function getAPIClient(ctx?: any) {
+    const { '@LovePetsBeta:token': token } = parseCookies(ctx)
 
-export default api;
+    const api = axios.create({
+        baseURL: 'http://localhost:3333'
+    });
+
+    if (token) {
+        api.defaults.headers.authorization = `Bearer ${token}`;
+    }
+
+    return api;
+}
+
+export const api = getAPIClient();

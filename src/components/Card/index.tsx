@@ -3,6 +3,7 @@ import {
     IoMdFemale,
     IoMdMale,
     IoMdHeartEmpty,
+    IoMdHeart,
     IoMdShare,
     IoMdAlert,
     IoLogoWhatsapp,
@@ -10,6 +11,14 @@ import {
     IoIosArrowDropleftCircle,
 } from 'react-icons/io';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+
+interface FavsData {
+    id: string;
+    user_id: string;
+    pet_id: string;
+    pet: Pets;
+}
 
 interface Pets {
     id: string;
@@ -47,9 +56,13 @@ type Gender = 'male' | 'female';
 
 interface CardProps {
     pet: Pets;
+    fav?: FavsData;
+    itsMyPet?: boolean;
+    onDelete?: (id: string) => Promise<void>;
+    toggleFav?: (pets_id: string) => Promise<void>;
 }
 
-export default function Card({ pet }: CardProps) {
+export default function Card({ pet, itsMyPet, fav, onDelete, toggleFav }: CardProps) {
     const imageContainer = useRef(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -123,9 +136,16 @@ export default function Card({ pet }: CardProps) {
             </div>
             <footer>
                 <div className={styles.activityContainer}>
-                    <button>
-                        <IoMdHeartEmpty size={25} color="#F43434" />
-                    </button>
+                    {!itsMyPet &&
+                        fav ?
+                        <button onClick={() => onDelete(fav.id)}>
+                            <IoMdHeart size={25} color="#F43434" />
+                        </button>
+                        :
+                        <button onClick={() => toggleFav(pet.id)}>
+                            <IoMdHeartEmpty size={25} color="#F43434" />
+                        </button>
+                    }
 
                     <div className={styles.dotsIndicators}>
                         {pet.images.map((image, index) => {
@@ -145,9 +165,11 @@ export default function Card({ pet }: CardProps) {
                         <button>
                             <IoMdShare size={25} color="#12BABA" />
                         </button>
-                        <button>
-                            <IoMdAlert size={25} color="#12BABA" />
-                        </button>
+                        {!itsMyPet &&
+                            <button>
+                                <IoMdAlert size={25} color="#12BABA" />
+                            </button>
+                        }
                     </div>
                 </div>
                 <div className={styles.descriptionContainer}>
@@ -155,21 +177,30 @@ export default function Card({ pet }: CardProps) {
                         {pet.description}
                     </p>
                 </div>
-                <h4>Entrar em contato:</h4>
-                <div className={styles.contactContainer}>
-                    <div className={styles.userInfo}>
-                        <img src={pet.user_avatar} alt="avatar" />
-                        <span>{pet.user_name}</span>
-                        <button>
-                            <IoLogoWhatsapp size={40} color="#4EC953" />
-                        </button>
-                    </div>
 
-                    <div className={styles.locationInfoContainer}>
-                        <span>{pet.distanceLocation} km</span>
+                {!itsMyPet ?
+                    <>
+                        <h4>Entrar em contato:</h4>
+                        <div className={styles.contactContainer}>
+                            <div className={styles.userInfo}>
+                                <img src={pet.user_avatar} alt="avatar" />
+                                <span>{pet.user_name}</span>
+                                <button>
+                                    <IoLogoWhatsapp size={40} color="#4EC953" />
+                                </button>
+                            </div>
+
+                            <div className={styles.locationInfoContainer}>
+                                <span>{pet.distanceLocation} km</span>
+                                <span>{pet.distanceTime}</span>
+                            </div>
+                        </div>
+                    </>
+                    :
+                    <div className={styles.distanceTimeContainer}>
                         <span>{pet.distanceTime}</span>
                     </div>
-                </div>
+                }
             </footer>
         </div>
     )

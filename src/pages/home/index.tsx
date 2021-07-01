@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import Card from "../../components/Card";
 import Header from "../../components/Header";
 import { AuthContext } from "../../context/AuthContext";
-import api from "../../services/api";
+import { api } from "../../services/api";
 import getDistanceLocation from "../../utils/getDistanceLocation";
 import getDistanceTime from "../../utils/getDistanceTime";
 import styles from './styles.module.scss';
@@ -18,6 +18,13 @@ import IcPets from "../../components/Icons/IcPets";
 
 interface HomeProps {
     pets: Pets[];
+}
+
+interface FavsData {
+    id: string;
+    user_id: string;
+    pet_id: string;
+    pet: Pets;
 }
 
 interface Pets {
@@ -57,6 +64,7 @@ type Gender = 'male' | 'female';
 export default function Home(props: HomeProps) {
     const { user, loading } = useContext(AuthContext);
     const [pets, setPets] = useState<Pets[]>([]);
+    const [myFavs, setMyFavs] = useState<FavsData[]>([]);
     const [page, setPage] = useState(2);
     const [distance, setDistance] = useState("50");
     const [filtered, setFiltered] = useState(false);
@@ -157,6 +165,26 @@ export default function Home(props: HomeProps) {
         }
     }
 
+    const loadFavs = async () => {
+        const response = await api.get('/favs');
+
+        setMyFavs(response.data);
+    }
+
+    const handleToggleFav = async (pets_id: string) => {
+        try {
+            await api.post('/favs', { pets_id });
+        } catch (error) {
+            if (myFavs) {
+                const favToDelete = myFavs.find(fav => (fav.pet_id === pets_id && fav.user_id === user.id));
+
+                if (favToDelete) {
+                    await api.delete(`/favs/${favToDelete.id}`);
+                }
+            }
+        }
+    }
+
     useEffect(() => {
         if (filtered) {
             loadPets();
@@ -171,6 +199,7 @@ export default function Home(props: HomeProps) {
 
     useEffect(() => {
         setPets(props.pets);
+        loadFavs();
     }, [props.pets]);
 
     if (loading || !user) {
@@ -186,6 +215,7 @@ export default function Home(props: HomeProps) {
                     return (
                         <Card key={pet.id}
                             pet={pet}
+                            toggleFav={handleToggleFav}
                         />
                     )
                 })}

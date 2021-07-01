@@ -12,125 +12,125 @@ import { ToastContext } from "../../context/ToastContext";
 import { AuthContext } from "../../context/AuthContext";
 import Input from "../Input";
 import Button from "../Button";
-import api from '../../services/api';
+import { api } from '../../services/api';
 
-interface SignUpFormData{
-    email:string;
-    name:string;
-    password:string;
-    phone:string;
+interface SignUpFormData {
+  email: string;
+  name: string;
+  password: string;
+  phone: string;
 }
 
 export default function FormSignUp() {
-    const formRef = useRef<FormHandles>(null)
-    const {handleToSignIn} = useContext(AuthContext);
-    const {addToast} = useContext(ToastContext);
+  const formRef = useRef<FormHandles>(null)
+  const { handleToSignIn } = useContext(AuthContext);
+  const { addToast } = useContext(ToastContext);
 
-    const handleSubmit = useCallback(async (data : SignUpFormData)=>{
-        try {
-          formRef.current?.setErrors({});
-          const schema = Yup.object().shape({
-            email: Yup.string().required('E-mail obrigatório!').email('Digite um e-mail válido'),
-            name: Yup.string().required('Nome é obrigatório!'),
-            password: Yup.string().required('Senha obrigatória'),
-            confirmPassword: Yup.string().required('Senha obrigatória').equals(
-              [Yup.ref('password')], 'a senha deve ser igual'),
-            phone: Yup.string().required('Telefone é obrigatório!'),
-          })
-    
-          await schema.validate(data, {
-            abortEarly: false,
-          });
+  const handleSubmit = useCallback(async (data: SignUpFormData) => {
+    try {
+      formRef.current?.setErrors({});
+      const schema = Yup.object().shape({
+        email: Yup.string().required('E-mail obrigatório!').email('Digite um e-mail válido'),
+        name: Yup.string().required('Nome é obrigatório!'),
+        password: Yup.string().required('Senha obrigatória'),
+        confirmPassword: Yup.string().required('Senha obrigatória').equals(
+          [Yup.ref('password')], 'a senha deve ser igual'),
+        phone: Yup.string().required('Telefone é obrigatório!'),
+      })
 
-          await api.post('/users', data );
+      await schema.validate(data, {
+        abortEarly: false,
+      });
 
-          addToast({
-            type: 'success',
-            title: 'Cadastro realizado!',
-            message: 'Cadastro realizado com sucesso!'
-          });
+      await api.post('/users', data);
 
-          handleToSignIn();
-  
-        } catch (error) {
-          if (error instanceof Yup.ValidationError){
-            const errors = getValidationErrors(error);
-    
-            formRef.current?.setErrors(errors);
+      addToast({
+        type: 'success',
+        title: 'Cadastro realizado!',
+        message: 'Cadastro realizado com sucesso!'
+      });
 
-            addToast({
-              type: 'error',
-              title: 'Erro na cadastro',
-              message: 'Preencha todos os campos corretamente.',
-            })
+      handleToSignIn();
 
-            return;
-          }
-    
-          addToast({
-            type: 'error',
-            title: 'Erro na cadastro',
-            message: 'Ocorreu um erro no cadastro, tente novamente.',
-          })
-        }
-      },[addToast])
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error);
+
+        formRef.current?.setErrors(errors);
+
+        addToast({
+          type: 'error',
+          title: 'Erro na cadastro',
+          message: 'Preencha todos os campos corretamente.',
+        })
+
+        return;
+      }
+
+      addToast({
+        type: 'error',
+        title: 'Erro na cadastro',
+        message: 'Ocorreu um erro no cadastro, tente novamente.',
+      })
+    }
+  }, [addToast])
 
 
-    return(
-        <div className={styles.formContent}>
-          <img src="/logo.svg" alt="love pets" />
+  return (
+    <div className={styles.formContent}>
+      <img src="/logo.svg" alt="love pets" />
 
-          <Form ref={formRef} onSubmit={handleSubmit}>
-            <strong>Cadastro</strong>
+      <Form ref={formRef} onSubmit={handleSubmit}>
+        <strong>Cadastro</strong>
 
-            <Input 
-              name="email" 
-              type="text" 
-              placeholder="e-mail" 
-              icon={FiMail}
-            />
+        <Input
+          name="email"
+          type="text"
+          placeholder="e-mail"
+          icon={FiMail}
+        />
 
-            <Input 
-              name="name" 
-              type="text" 
-              placeholder="nome" 
-              icon={FiUser}
-            />
+        <Input
+          name="name"
+          type="text"
+          placeholder="nome"
+          icon={FiUser}
+        />
 
-            <Input 
-              name="password" 
-              type="password" 
-              placeholder="senha" 
-              icon={FiLock}
-            />
+        <Input
+          name="password"
+          type="password"
+          placeholder="senha"
+          icon={FiLock}
+        />
 
-            <Input 
-              name="confirmPassword" 
-              type="password" 
-              placeholder="confirmar senha" 
-              icon={FiLock}
-            />
+        <Input
+          name="confirmPassword"
+          type="password"
+          placeholder="confirmar senha"
+          icon={FiLock}
+        />
 
-            <Input 
-              name="phone" 
-              type="text" 
-              placeholder="(00) 0000-0000" 
-              icon={FiPhone}
-            />
+        <Input
+          name="phone"
+          type="text"
+          placeholder="(00) 0000-0000"
+          icon={FiPhone}
+        />
 
-            <div className={styles.buttonContainer}>
-                <Button type="submit">
-                Cadastrar
-                </Button>
-            </div>
-
-          </Form>
-
-          <a onClick={handleToSignIn}>
-            Já tem uma conta? <strong>Entre</strong>
-            <FiLogIn/>
-          </a>
-
+        <div className={styles.buttonContainer}>
+          <Button type="submit">
+            Cadastrar
+          </Button>
         </div>
-    )
+
+      </Form>
+
+      <a onClick={handleToSignIn}>
+        Já tem uma conta? <strong>Entre</strong>
+        <FiLogIn />
+      </a>
+
+    </div>
+  )
 }
