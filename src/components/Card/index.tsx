@@ -94,7 +94,7 @@ export default function Card({ pet }: CardProps) {
     }, [imageContainer.current, currentImageIndex]);
 
     return (
-        <div className={styles.card}>
+        <div className={styles.card} key={pet.id}>
             <header>
                 <span>{pet.age}</span>
                 <strong>{pet.name}</strong>
@@ -128,15 +128,17 @@ export default function Card({ pet }: CardProps) {
                     </button>
 
                     <div className={styles.dotsIndicators}>
-                        {pet.images.map((image, index) => (
-                            <>
-                                {index === currentImageIndex ?
+                        {pet.images.map((image, index) => {
+                            if (index === currentImageIndex) {
+                                return (
                                     <span key={image.id} style={{ background: '#12BABA' }} />
-                                    :
+                                )
+                            } else {
+                                return (
                                     <span key={image.id} />
-                                }
-                            </>
-                        ))}
+                                )
+                            }
+                        })}
                     </div>
 
                     <div className={styles.actionsButtonsContainer}>

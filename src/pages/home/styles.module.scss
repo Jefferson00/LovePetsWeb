@@ -5,6 +5,58 @@
   align-items: center;
   flex-direction: column;
 
+  .filterContainer{
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    border-radius: 10px;
+    background: #f43434;
+    position: fixed;
+    top: 20%;
+    right: 3rem;
+    padding: 1.5rem;
+
+    span{
+      margin-left: 0.75rem;
+      color: #fff;
+    }
+
+    .clearFilterButton{
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 1.75rem;
+    }
+
+    button{
+      border: none;
+      background: #fff;
+      border-radius: 50%;
+      font-size: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      margin: 0.75rem;
+      cursor: pointer;
+    }
+
+    .specieFilterContainer{
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .genderFilterContainer{
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+
+    .distanceFilterContainer{
+      margin-bottom: 1.75rem;
+      input[type=range]{
+        color: #12baba;
+      }
+    }
+  }
+
   .loadMoreContainer{
     margin: 3.75rem 0;
 

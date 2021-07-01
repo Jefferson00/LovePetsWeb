@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Card from "../../components/Card";
 import Header from "../../components/Header";
 import { AuthContext } from "../../context/AuthContext";
@@ -9,7 +9,12 @@ import getDistanceLocation from "../../utils/getDistanceLocation";
 import getDistanceTime from "../../utils/getDistanceTime";
 import styles from './styles.module.scss';
 
-import { IoIosArrowDropdownCircle } from 'react-icons/io';
+import {
+    IoIosArrowDropdownCircle,
+    IoMdFemale,
+    IoMdMale,
+} from 'react-icons/io';
+import IcPets from "../../components/Icons/IcPets";
 
 interface HomeProps {
     pets: Pets[];
@@ -53,6 +58,10 @@ export default function Home(props: HomeProps) {
     const { user, loading } = useContext(AuthContext);
     const [pets, setPets] = useState<Pets[]>([]);
     const [page, setPage] = useState(2);
+    const [distance, setDistance] = useState("50");
+    const [filtered, setFiltered] = useState(false);
+    const [gender, setGender] = useState(null);
+    const [specie, setSpecie] = useState(null);
     const [hasMoreResults, setHasMoreResults] = useState(true);
     const router = useRouter();
     let petsArr: Pets[] = [];
@@ -87,13 +96,48 @@ export default function Home(props: HomeProps) {
     const loadMorePets = async () => {
         setPage(page + 1);
 
+        loadPets();
+    }
+
+    const handleUpdateSpecieFilter = (specieFilter: string | null) => {
+        if (specie || specieFilter) {
+            setPage(1);
+            setFiltered(true);
+            setSpecie(specieFilter);
+            setPets([]);
+            setHasMoreResults(true);
+        }
+    }
+
+    const handleUpdateGenderFilter = (genderFilter: string | null) => {
+        if (gender || genderFilter) {
+            setPage(1);
+            setFiltered(true);
+            setPets([]);
+            setHasMoreResults(true);
+            setGender(genderFilter);
+        }
+    }
+
+    const handleUpdateDistanceFilter = (distance: string) => {
+        setPage(1);
+        setFiltered(true);
+        setPets([]);
+        setHasMoreResults(true);
+        setDistance(distance);
+    }
+
+    const loadPets = async () => {
+        console.log(specie)
+        console.log(page)
+
         const { data } = await api.get('/pets', {
             params: {
                 location_lat: '-15.778189',
                 location_lon: '-48.139945',
-                distance: '50',
-                species: undefined,
-                gender: undefined,
+                distance: distance,
+                species: specie,
+                gender: gender,
                 limit: 5,
                 skip: page,
             }
@@ -106,8 +150,18 @@ export default function Home(props: HomeProps) {
         petsArr = data;
         petsArr = await setPetImages(petsArr);
 
-        setPets([...pets, ...petsArr]);
+        if (page > 1) {
+            setPets([...pets, ...petsArr]);
+        } else {
+            setPets(petsArr);
+        }
     }
+
+    useEffect(() => {
+        if (filtered) {
+            loadPets();
+        }
+    }, [specie, gender, distance]);
 
     useEffect(() => {
         if (!user) {
@@ -135,6 +189,101 @@ export default function Home(props: HomeProps) {
                         />
                     )
                 })}
+
+                <div className={styles.filterContainer}>
+                    <span>Filtrar por especie</span>
+                    <div className={styles.specieFilterContainer}>
+                        <button onClick={() => handleUpdateSpecieFilter('dog')}>
+                            <IcPets
+                                size="25"
+                                color={specie === 'dog' ? "#12baba" : "#c4c4c4"}
+                                name="dog"
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateSpecieFilter('cat')}>
+                            <IcPets
+                                size="25"
+                                color={specie === 'cat' ? "#12baba" : "#c4c4c4"}
+                                name="cat"
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateSpecieFilter('rodent')}>
+                            <IcPets
+                                size="25"
+                                color={specie === 'rodent' ? "#12baba" : "#c4c4c4"}
+                                name="rodent"
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateSpecieFilter('rabbit')}>
+                            <IcPets
+                                size="25"
+                                color={specie === 'rabbit' ? "#12baba" : "#c4c4c4"}
+                                name="rabbit"
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateSpecieFilter('fish')}>
+                            <IcPets
+                                size="25"
+                                color={specie === 'fish' ? "#12baba" : "#c4c4c4"}
+                                name="fish"
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateSpecieFilter('others')}>
+                            <IcPets
+                                size="25"
+                                color={specie === 'others' ? "#12baba" : "#c4c4c4"}
+                                name="others"
+                            />
+                        </button>
+                    </div>
+
+                    <span className={styles.clearFilterButton} onClick={() => handleUpdateSpecieFilter(null)}>
+                        Limpar filtro
+                    </span>
+
+                    <span>Filtrar por genêro</span>
+                    <div className={styles.genderFilterContainer}>
+                        <button onClick={() => handleUpdateGenderFilter('female')}>
+                            <IoMdFemale
+                                size="25"
+                                color={gender === 'female' ? "#12baba" : "#c4c4c4"}
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateGenderFilter('male')}>
+                            <IoMdMale
+                                size="25"
+                                color={gender === 'male' ? "#12baba" : "#c4c4c4"}
+                            />
+                        </button>
+                        <button onClick={() => handleUpdateGenderFilter(null)}>
+                            <IoMdMale
+                                size="14"
+                                color={!gender ? "#12baba" : "#c4c4c4"}
+                            />
+                            <IoMdFemale
+                                size="14"
+                                color={!gender ? "#12baba" : "#c4c4c4"}
+                            />
+                        </button>
+                    </div>
+
+
+                    <span>Filtrar por distância</span>
+                    <div className={styles.distanceFilterContainer}>
+                        <input
+                            type="range"
+                            name="distance"
+                            id="distance"
+                            min="10"
+                            max="90"
+                            value={distance}
+                            onChange={(e) => handleUpdateDistanceFilter(e.target.value)}
+                        />
+                    </div>
+                    <span>
+                        {distance} km
+                    </span>
+                </div>
 
                 <div className={styles.loadMoreContainer}>
                     {hasMoreResults ?
