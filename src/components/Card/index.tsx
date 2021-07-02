@@ -6,11 +6,14 @@ import {
     IoMdHeart,
     IoMdShare,
     IoMdAlert,
+    IoMdTrash,
     IoLogoWhatsapp,
     IoIosArrowDroprightCircle,
     IoIosArrowDropleftCircle,
 } from 'react-icons/io';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { RWebShare } from "react-web-share";
 
 
 interface FavsData {
@@ -58,11 +61,13 @@ interface CardProps {
     pet: Pets;
     fav?: FavsData;
     itsMyPet?: boolean;
+    itsFav?: boolean;
     onDelete?: (id: string) => Promise<void>;
     toggleFav?: (pets_id: string) => Promise<void>;
 }
 
-export default function Card({ pet, itsMyPet, fav, onDelete, toggleFav }: CardProps) {
+export default function Card({ pet, itsMyPet, fav, itsFav, onDelete, toggleFav }: CardProps) {
+    const { user } = useContext(AuthContext);
     const imageContainer = useRef(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -136,14 +141,23 @@ export default function Card({ pet, itsMyPet, fav, onDelete, toggleFav }: CardPr
             </div>
             <footer>
                 <div className={styles.activityContainer}>
-                    {!itsMyPet &&
+                    {!itsMyPet ?
                         fav ?
-                        <button onClick={() => onDelete(fav.id)}>
-                            <IoMdHeart size={25} color="#F43434" />
-                        </button>
+                            <button onClick={() => onDelete(fav.id)}>
+                                <IoMdHeart size={25} color="#F43434" />
+                            </button>
+                            :
+                            itsFav ?
+                                <button onClick={() => toggleFav(pet.id)}>
+                                    <IoMdHeart size={25} color="#F43434" />
+                                </button>
+                                :
+                                <button onClick={() => toggleFav(pet.id)}>
+                                    <IoMdHeartEmpty size={25} color="#F43434" />
+                                </button>
                         :
-                        <button onClick={() => toggleFav(pet.id)}>
-                            <IoMdHeartEmpty size={25} color="#F43434" />
+                        <button onClick={() => onDelete(pet.id)}>
+                            <IoMdTrash size={25} color="#F43434" />
                         </button>
                     }
 
@@ -162,9 +176,17 @@ export default function Card({ pet, itsMyPet, fav, onDelete, toggleFav }: CardPr
                     </div>
 
                     <div className={styles.actionsButtonsContainer}>
-                        <button>
-                            <IoMdShare size={25} color="#12BABA" />
-                        </button>
+                        <RWebShare
+                            data={{
+                                text: 'Olha só, esse pet fofinho precisa de um novo lar. 😍🥺 ',
+                                url: "http://localhost:3000/home",
+                                title: 'Love pets',
+                            }}
+                        >
+                            <button>
+                                <IoMdShare size={25} color="#12BABA" />
+                            </button>
+                        </RWebShare>
                         {!itsMyPet &&
                             <button>
                                 <IoMdAlert size={25} color="#12BABA" />

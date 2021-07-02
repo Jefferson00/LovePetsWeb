@@ -12,12 +12,14 @@ export default function Header() {
             <div className={styles.logoContainer}>
                 <img src="/logoW.svg" alt="love pets" />
 
-                <div>
-                    <p>Bem vindo,</p>
-                    <strong>
-                        {user.name}
-                    </strong>
-                </div>
+                {user &&
+                    <div>
+                        <p>Bem vindo,</p>
+                        <strong>
+                            {user.name}
+                        </strong>
+                    </div>
+                }
             </div>
             <div className={styles.menuContainer}>
                 <Link href="/home">
@@ -26,28 +28,39 @@ export default function Header() {
                         <span>Home</span>
                     </a>
                 </Link>
-                <Link href="/pets/myFavs">
-                    <a>
-                        <MdFavorite size={25} />
-                        <span>Favoritos</span>
-                    </a>
-                </Link>
-                <Link href="/home/profile">
-                    <a>
-                        <MdAccountCircle size={25} />
-                        <span>Perfil</span>
-                    </a>
-                </Link>
-                <Link href="/pets/myPets">
-                    <a>
-                        <MdPets size={25} />
-                        <span>Anúncios</span>
-                    </a>
-                </Link>
-                <a onClick={signOut}>
-                    <MdExitToApp size={25} />
-                    <span>Sair</span>
-                </a>
+                {user ?
+                    <>
+                        <Link href="/pets/myFavs">
+                            <a>
+                                <MdFavorite size={25} />
+                                <span>Favoritos</span>
+                            </a>
+                        </Link>
+                        <Link href="/home/profile">
+                            <a>
+                                <MdAccountCircle size={25} />
+                                <span>Perfil</span>
+                            </a>
+                        </Link>
+                        <Link href="/pets/myPets">
+                            <a>
+                                <MdPets size={25} />
+                                <span>Anúncios</span>
+                            </a>
+                        </Link>
+                        <a onClick={signOut}>
+                            <MdExitToApp size={25} />
+                            <span>Sair</span>
+                        </a>
+                    </>
+                    :
+                    <Link href="/">
+                        <a>
+                            <p>Entre ou cadastre-se</p>
+                            <MdExitToApp size={25} />
+                        </a>
+                    </Link>
+                }
             </div>
         </div>
     )

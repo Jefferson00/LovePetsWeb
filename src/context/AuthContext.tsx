@@ -97,6 +97,7 @@ export const AuthProvider = ({ children }) => {
 
         setCookie(undefined, '@LovePetsBeta:token', token, {
             maxAge: 60 * 60 * 60 * 1,
+            path: '/',
         })
 
         api.defaults.headers.authorization = `Bearer ${token}`;
@@ -110,7 +111,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('@LovePetsBeta:token');
         localStorage.removeItem('@LovePetsBeta:user');
 
-        destroyCookie(null, '@LovePetsBeta:token');
+        destroyCookie(null, '@LovePetsBeta:token', {
+            path: '/',
+        });
 
         setAuthData({} as AuthState);
 

@@ -7,34 +7,30 @@ import { AuthContext } from '../context/AuthContext';
 
 import { useRouter } from 'next/router';
 import FormForgotPassword from '../components/Form/FormForgotPassword';
+import { GetServerSideProps } from 'next';
+import { parseCookies } from 'nookies';
 
 
 export default function Home() {
-  const {formState, user, loading} = useContext(AuthContext);
+  const { formState, user, loading } = useContext(AuthContext);
   const router = useRouter();
 
-  useEffect(() =>{
-    if(user){
+  useEffect(() => {
+    if (user) {
       router.push('/home');
     }
-  },[user]);
-
-
-  if(loading || user){
-    return null
-  }
-
+  }, [user]);
 
   return (
     <div className={styles.container}>
 
-     <section className={styles.formContainer}>
-       {formState === 'signIn' && <FormSignIn/>}
-       {formState === 'signUp' && <FormSignUp/>}
-       {formState === 'forgot' && <FormForgotPassword/>}
-     </section>
+      <section className={styles.formContainer}>
+        {formState === 'signIn' && <FormSignIn />}
+        {formState === 'signUp' && <FormSignUp />}
+        {formState === 'forgot' && <FormForgotPassword />}
+      </section>
 
-     <section className={styles.contentContainer}>
+      <section className={styles.contentContainer}>
 
         <h1>Love Pets</h1>
         <p>Amor aos animais</p>
@@ -53,8 +49,28 @@ export default function Home() {
           </span>
         </div>
 
-     </section>
+      </section>
 
     </div>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+  const { ['@LovePetsBeta:token']: token } = parseCookies(context);
+
+  if (token) {
+    return {
+      redirect: {
+        destination: '/home',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {
+
+    }
+  }
 }

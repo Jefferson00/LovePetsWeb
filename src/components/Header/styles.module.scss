@@ -32,12 +32,15 @@
     }
 
     .menuContainer{
-
+        display: flex;
+        align-items: center;
         a{
             color: #ffffff;
             transition: all 0.2s;
             text-decoration: none;
             position: relative;
+            display: flex;
+            align-items: center;
 
             & + a{
                 margin-left: 1.5rem;
@@ -49,10 +52,15 @@
 
             span{
                 position: absolute;
-                bottom: -0.75rem;
+                bottom: 1.85rem;
                 left: 50%;
                 transform: translateX(-50%);
                 visibility: hidden;
+            }
+
+            p{
+                margin-right: 0.75rem;
+                font-weight: 700;
             }
 
             &:hover span{

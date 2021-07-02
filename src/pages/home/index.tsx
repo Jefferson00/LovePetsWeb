@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Card from "../../components/Card";
 import Header from "../../components/Header";
 import { AuthContext } from "../../context/AuthContext";
@@ -8,6 +8,7 @@ import { api } from "../../services/api";
 import getDistanceLocation from "../../utils/getDistanceLocation";
 import getDistanceTime from "../../utils/getDistanceTime";
 import styles from './styles.module.scss';
+import { setCookie, destroyCookie, parseCookies } from 'nookies';
 
 import {
     IoIosArrowDropdownCircle,
@@ -62,7 +63,8 @@ type Age = '- 1 ano' | '1 ano' | '2 anos' | '3 anos' | '4 anos' | '+ 4 anos';
 type Gender = 'male' | 'female';
 
 export default function Home(props: HomeProps) {
-    const { user, loading } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
+    const router = useRouter();
     const [pets, setPets] = useState<Pets[]>([]);
     const [myFavs, setMyFavs] = useState<FavsData[]>([]);
     const [page, setPage] = useState(2);
@@ -71,7 +73,7 @@ export default function Home(props: HomeProps) {
     const [gender, setGender] = useState(null);
     const [specie, setSpecie] = useState(null);
     const [hasMoreResults, setHasMoreResults] = useState(true);
-    const router = useRouter();
+
     let petsArr: Pets[] = [];
 
     const setPetImages = async (petsArr: Pets[]): Promise<Pets[]> => {
@@ -136,9 +138,6 @@ export default function Home(props: HomeProps) {
     }
 
     const loadPets = async () => {
-        console.log(specie)
-        console.log(page)
-
         const { data } = await api.get('/pets', {
             params: {
                 location_lat: '-15.778189',
@@ -172,17 +171,22 @@ export default function Home(props: HomeProps) {
     }
 
     const handleToggleFav = async (pets_id: string) => {
-        try {
-            await api.post('/favs', { pets_id });
-        } catch (error) {
-            if (myFavs) {
-                const favToDelete = myFavs.find(fav => (fav.pet_id === pets_id && fav.user_id === user.id));
+        if (user) {
+            try {
+                await api.post('/favs', { pets_id });
+            } catch (error) {
+                if (myFavs) {
+                    const favToDelete = myFavs.find(fav => (fav.pet_id === pets_id && fav.user_id === user.id));
 
-                if (favToDelete) {
-                    await api.delete(`/favs/${favToDelete.id}`);
+                    if (favToDelete) {
+                        await api.delete(`/favs/${favToDelete.id}`);
+                    }
                 }
             }
+        } else {
+            alert('Entre ou crie uma conta');
         }
+        loadFavs();
     }
 
     useEffect(() => {
@@ -191,20 +195,33 @@ export default function Home(props: HomeProps) {
         }
     }, [specie, gender, distance]);
 
-    useEffect(() => {
-        if (!user) {
-            router.push('/');
-        }
-    }, [user]);
 
     useEffect(() => {
         setPets(props.pets);
-        loadFavs();
+
     }, [props.pets]);
 
-    if (loading || !user) {
-        return null
-    }
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            destroyCookie(null, '@LovePetsBeta:location_latitude');
+            destroyCookie(null, '@LovePetsBeta:location_longitude');
+            navigator.geolocation.getCurrentPosition((position) => {
+                console.log(position);
+                setCookie(undefined, '@LovePetsBeta:location_latitude', String(position.coords.latitude), {
+                    maxAge: 60 * 60 * 60 * 1,
+                });
+                setCookie(undefined, '@LovePetsBeta:location_longitude', String(position.coords.longitude), {
+                    maxAge: 60 * 60 * 60 * 1,
+                });
+            })
+        } else {
+            alert("Desculpe, mas o seu navegador parece não possuir geolocalização. ")
+        }
+        if (user) {
+            loadFavs();
+        }
+    }, []);
+
 
     return (
         <div>
@@ -216,6 +233,9 @@ export default function Home(props: HomeProps) {
                         <Card key={pet.id}
                             pet={pet}
                             toggleFav={handleToggleFav}
+                            itsFav={user && myFavs.find(
+                                fav => (fav.pet_id === pet.id && fav.user_id === user.id)
+                            ) && true}
                         />
                     )
                 })}
@@ -334,13 +354,27 @@ export default function Home(props: HomeProps) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     let petsArr: Pets[] = [];
 
+    const { ['@LovePetsBeta:location_latitude']: latitude } = parseCookies(context);
+    const { ['@LovePetsBeta:location_longitude']: longitude } = parseCookies(context);
+
+    let current_latitude = '-15.778189';
+    let currrent_longitude = '-48.139945';
+
+    if (latitude) {
+        current_latitude = latitude;
+    }
+
+    if (longitude) {
+        currrent_longitude = longitude;
+    }
+
     const setPetImages = async (petsArr: Pets[]): Promise<Pets[]> => {
         const mapPromises = petsArr.map(async (pet) => {
             let petsWithImages = Object.assign({}, pet)
             petsWithImages.images = await findPetImages(pet.id);
             petsWithImages.distanceLocation = getDistanceLocation({
-                fromLat: '-15.778189',
-                fromLon: '-48.139945',
+                fromLat: current_latitude,
+                fromLon: currrent_longitude,
                 toLat: pet.location_lat,
                 toLon: pet.location_lon,
             });
@@ -363,8 +397,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const { data } = await api.get('/pets', {
         params: {
-            location_lat: '-15.778189',
-            location_lon: '-48.139945',
+            location_lat: current_latitude,
+            location_lon: currrent_longitude,
             distance: '50',
             species: undefined,
             gender: undefined,

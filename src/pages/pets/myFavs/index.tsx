@@ -59,48 +59,6 @@ export default function MyFavs(props: HomeProps) {
   const { user, loading } = useContext(AuthContext);
   const [myFavs, setMyFavs] = useState<FavsData[]>([]);
 
-  let petsArr: FavsData[] = [];
-
-  const setMyPetImages = async (petsArr: FavsData[]): Promise<FavsData[]> => {
-    const mapPromises = petsArr.map(async (fav) => {
-      let petsWithImages = Object.assign({}, fav)
-      petsWithImages.pet.images = await findPetImages(fav.pet.id);
-      petsWithImages.pet.distanceLocation = getDistanceLocation({
-        fromLat: '-15.778189',
-        fromLon: '-48.139945',
-        toLat: fav.pet.location_lat,
-        toLon: fav.pet.location_lon,
-      });
-      petsWithImages.pet.distanceTime = getDistanceTime(fav.pet.created_at);
-
-      return petsWithImages;
-    });
-    return await Promise.all(mapPromises);
-  }
-
-  const findPetImages = async (pet_id: string): Promise<IPetImages[]> => {
-    let images: IPetImages[] = []
-    try {
-      const response = await api.get(`/images/${pet_id}`)
-      images = response.data;
-    } catch (error) {
-    }
-    return images;
-  }
-
-  const loadFavs = async () => {
-    const response = await api.get('/favs');
-
-    petsArr = response.data;
-    petsArr = await setMyPetImages(petsArr);
-
-    setMyFavs(petsArr);
-
-    /*if (JSON.stringify(petsArr) !== JSON.stringify(myPets)) {
-      //setMyPets(petsArr);
-    }*/
-  }
-
   const handleDeleteFavPet = async (id: string) => {
     try {
       await api.delete(`favs/${id}`);
@@ -180,8 +138,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   petsArr = data;
   petsArr = await setPetImages(petsArr);
-
-
 
   return {
     props: {
