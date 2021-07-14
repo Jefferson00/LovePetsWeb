@@ -1,8 +1,7 @@
 import { GetServerSideProps } from "next";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../../components/Card";
 import Header from "../../../components/Header";
-import { AuthContext } from "../../../context/AuthContext";
 import { api, getAPIClient } from "../../../services/api";
 import { parseCookies } from "nookies";
 import getDistanceLocation from "../../../utils/getDistanceLocation";
@@ -48,7 +47,6 @@ type Age = '- 1 ano' | '1 ano' | '2 anos' | '3 anos' | '4 anos' | '+ 4 anos';
 type Gender = 'male' | 'female';
 
 export default function MyPets(props: HomeProps) {
-  const { user, loading } = useContext(AuthContext);
   const [myPets, setMyPets] = useState<Pets[]>([]);
 
   const handleDeleteMyPet = async (pet_id: string) => {

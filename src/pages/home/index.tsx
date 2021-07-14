@@ -1,20 +1,23 @@
 import { GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import Card from "../../components/Card";
-import Header from "../../components/Header";
 import { AuthContext } from "../../context/AuthContext";
 import { api } from "../../services/api";
+import { setCookie, destroyCookie, parseCookies } from 'nookies';
+
+import Card from "../../components/Card";
+import Header from "../../components/Header";
+
 import getDistanceLocation from "../../utils/getDistanceLocation";
 import getDistanceTime from "../../utils/getDistanceTime";
+
 import styles from './styles.module.scss';
-import { setCookie, destroyCookie, parseCookies } from 'nookies';
 
 import {
     IoIosArrowDropdownCircle,
     IoMdFemale,
     IoMdMale,
 } from 'react-icons/io';
+
 import IcPets from "../../components/Icons/IcPets";
 
 interface HomeProps {
@@ -64,10 +67,17 @@ type Gender = 'male' | 'female';
 
 export default function Home(props: HomeProps) {
     const { user } = useContext(AuthContext);
-    const router = useRouter();
     const [pets, setPets] = useState<Pets[]>([]);
     const [myFavs, setMyFavs] = useState<FavsData[]>([]);
     const [page, setPage] = useState(2);
+    const [currentLatitude, setCurrentLatitude] = useState(() => {
+        const { ['@LovePetsBeta:location_latitude']: latitude } = parseCookies();
+        return latitude || '-15.778189'
+    });
+    const [currentLongitude, setCurrentLongitude] = useState(() => {
+        const { ['@LovePetsBeta:location_longitude']: longitude } = parseCookies();
+        return longitude || '-48.139945'
+    });
     const [distance, setDistance] = useState("50");
     const [filtered, setFiltered] = useState(false);
     const [gender, setGender] = useState(null);
@@ -81,8 +91,8 @@ export default function Home(props: HomeProps) {
             let petsWithImages = Object.assign({}, pet)
             petsWithImages.images = await findPetImages(pet.id);
             petsWithImages.distanceLocation = getDistanceLocation({
-                fromLat: '-15.778189',
-                fromLon: '-48.139945',
+                fromLat: currentLatitude,
+                fromLon: currentLongitude,
                 toLat: pet.location_lat,
                 toLon: pet.location_lon,
             });
@@ -140,8 +150,8 @@ export default function Home(props: HomeProps) {
     const loadPets = async () => {
         const { data } = await api.get('/pets', {
             params: {
-                location_lat: '-15.778189',
-                location_lon: '-48.139945',
+                location_lat: currentLatitude,
+                location_lon: currentLongitude,
                 distance: distance,
                 species: specie,
                 gender: gender,
@@ -206,7 +216,6 @@ export default function Home(props: HomeProps) {
             destroyCookie(null, '@LovePetsBeta:location_latitude');
             destroyCookie(null, '@LovePetsBeta:location_longitude');
             navigator.geolocation.getCurrentPosition((position) => {
-                console.log(position);
                 setCookie(undefined, '@LovePetsBeta:location_latitude', String(position.coords.latitude), {
                     maxAge: 60 * 60 * 60 * 1,
                 });

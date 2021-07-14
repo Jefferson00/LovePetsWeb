@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Link from 'next/link';
-import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useContext, useState } from "react";
 import Header from "../../../components/Header";
 import { AuthContext } from "../../../context/AuthContext";
 import { MdEmail, MdPhone, MdEdit, MdCameraAlt } from 'react-icons/md';
@@ -12,17 +12,9 @@ import FormUpdateProfile from "../../../components/Form/FormUpdateProfile";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
 
-interface UserAuthenticated {
-    name: string;
-    email: string;
-    avatar?: string;
-    phone: string;
-}
-
 export default function Profile() {
-    const { user, loading, updateUser } = useContext(AuthContext);
+    const { user, updateUser } = useContext(AuthContext);
     const { addToast } = useContext(ToastContext);
-    const router = useRouter();
 
     const [isUpdating, setIsUpdating] = useState(false);
 

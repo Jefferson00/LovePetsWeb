@@ -53,7 +53,7 @@
             top: 50%;
             left: 0;
             opacity: 0.7;
-            z-index: 5;
+          
         }
         
         .buttonNext{
@@ -61,7 +61,7 @@
             top: 50%;
             right: 0;
             opacity: 0.7;
-            z-index: 5;
+           
         }
     }
 
@@ -158,5 +158,30 @@
             justify-content: center;
             margin-bottom: 1.6rem;
         }
+    }
+
+      
+}
+
+.reportForm{
+
+
+    strong{
+      color: #656565;
+      font-size: 1.25rem;
+    }
+
+    button{
+        cursor: pointer;
+        background: #12BABA;
+        height: 3.25rem;
+        width: 100%;
+        padding: 0 1.125rem;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        border: none;
     }
 }

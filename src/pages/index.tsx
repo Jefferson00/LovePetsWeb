@@ -12,7 +12,7 @@ import { parseCookies } from 'nookies';
 
 
 export default function Home() {
-  const { formState, user, loading } = useContext(AuthContext);
+  const { formState, user } = useContext(AuthContext);
   const router = useRouter();
 
   useEffect(() => {
