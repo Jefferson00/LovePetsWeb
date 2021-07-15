@@ -264,9 +264,13 @@ export default function Card({ pet, itsMyPet, fav, itsFav, onDelete, toggleFav }
                                 <div className={styles.userInfo}>
                                     <img src={pet.user_avatar} alt="avatar" />
                                     <span>{pet.user_name}</span>
-                                    <button>
-                                        <IoLogoWhatsapp size={40} color="#4EC953" />
-                                    </button>
+                                    <a href={`https://api.whatsapp.com/send?phone=${pet.user_phone}`}
+                                        target="_blank" rel="noopener noreferrer"
+                                    >
+                                        <button>
+                                            <IoLogoWhatsapp size={40} color="#4EC953" />
+                                        </button>
+                                    </a>
                                 </div>
 
                                 <div className={styles.locationInfoContainer}>
