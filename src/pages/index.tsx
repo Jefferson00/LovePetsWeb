@@ -25,6 +25,10 @@ export default function Home() {
     <div className={styles.container}>
 
       <section className={styles.formContainer}>
+        <div className={styles.mobileTitle}>
+          <h1>Love Pets</h1>
+          <p>Amor aos animais</p>
+        </div>
         {formState === 'signIn' && <FormSignIn />}
         {formState === 'signUp' && <FormSignUp />}
         {formState === 'forgot' && <FormForgotPassword />}
