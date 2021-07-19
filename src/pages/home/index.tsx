@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { api } from "../../services/api";
 import { setCookie, destroyCookie, parseCookies } from 'nookies';
@@ -16,6 +16,8 @@ import {
     IoIosArrowDropdownCircle,
     IoMdFemale,
     IoMdMale,
+    IoIosOptions,
+    IoMdClose,
 } from 'react-icons/io';
 
 import IcPets from "../../components/Icons/IcPets";
@@ -67,6 +69,9 @@ type Gender = 'male' | 'female';
 
 export default function Home(props: HomeProps) {
     const { user } = useContext(AuthContext);
+    const filterContainerRef = useRef<HTMLDivElement>(null);
+    const filterContentRef = useRef<HTMLDivElement>(null);
+    const [filterOptionsOpened, setFilterOptionsOpened] = useState(false);
     const [pets, setPets] = useState<Pets[]>([]);
     const [myFavs, setMyFavs] = useState<FavsData[]>([]);
     const [page, setPage] = useState(2);
@@ -199,6 +204,18 @@ export default function Home(props: HomeProps) {
         loadFavs();
     }
 
+    const openFilterOptions = () => {
+        setFilterOptionsOpened(true);
+
+        filterContainerRef.current.classList.add(styles.filterContainerMobileOpened)
+    }
+
+    const closeFilterOptions = () => {
+        setFilterOptionsOpened(false);
+
+        filterContainerRef.current.classList.remove(styles.filterContainerMobileOpened)
+    }
+
     useEffect(() => {
         if (filtered) {
             loadPets();
@@ -249,99 +266,117 @@ export default function Home(props: HomeProps) {
                     )
                 })}
 
-                <div className={styles.filterContainer}>
-                    <span>Filtrar por especie</span>
-                    <div className={styles.specieFilterContainer}>
-                        <button onClick={() => handleUpdateSpecieFilter('dog')}>
-                            <IcPets
-                                size="25"
-                                color={specie === 'dog' ? "#12baba" : "#c4c4c4"}
-                                name="dog"
-                            />
-                        </button>
-                        <button onClick={() => handleUpdateSpecieFilter('cat')}>
-                            <IcPets
-                                size="25"
-                                color={specie === 'cat' ? "#12baba" : "#c4c4c4"}
-                                name="cat"
-                            />
-                        </button>
-                        <button onClick={() => handleUpdateSpecieFilter('rodent')}>
-                            <IcPets
-                                size="25"
-                                color={specie === 'rodent' ? "#12baba" : "#c4c4c4"}
-                                name="rodent"
-                            />
-                        </button>
-                        <button onClick={() => handleUpdateSpecieFilter('rabbit')}>
-                            <IcPets
-                                size="25"
-                                color={specie === 'rabbit' ? "#12baba" : "#c4c4c4"}
-                                name="rabbit"
-                            />
-                        </button>
-                        <button onClick={() => handleUpdateSpecieFilter('fish')}>
-                            <IcPets
-                                size="25"
-                                color={specie === 'fish' ? "#12baba" : "#c4c4c4"}
-                                name="fish"
-                            />
-                        </button>
-                        <button onClick={() => handleUpdateSpecieFilter('others')}>
-                            <IcPets
-                                size="25"
-                                color={specie === 'others' ? "#12baba" : "#c4c4c4"}
-                                name="others"
-                            />
-                        </button>
+
+
+                <div className={styles.filterContainer} ref={filterContainerRef}>
+                    <div className={styles.filterMobileIcon}>
+                        {filterOptionsOpened ?
+                            <button onClick={closeFilterOptions}>
+                                <IoMdClose size={25} />
+                            </button>
+                            :
+                            <button onClick={openFilterOptions}>
+                                <IoIosOptions size={25} />
+                            </button>
+                        }
+
                     </div>
 
-                    <span className={styles.clearFilterButton} onClick={() => handleUpdateSpecieFilter(null)}>
-                        Limpar filtro
-                    </span>
+                    <div className={styles.filterContent} ref={filterContentRef}>
+                        <span>Filtrar por especie</span>
+                        <div className={styles.specieFilterContainer}>
+                            <button onClick={() => handleUpdateSpecieFilter('dog')}>
+                                <IcPets
+                                    size="25"
+                                    color={specie === 'dog' ? "#12baba" : "#c4c4c4"}
+                                    name="dog"
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateSpecieFilter('cat')}>
+                                <IcPets
+                                    size="25"
+                                    color={specie === 'cat' ? "#12baba" : "#c4c4c4"}
+                                    name="cat"
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateSpecieFilter('rodent')}>
+                                <IcPets
+                                    size="25"
+                                    color={specie === 'rodent' ? "#12baba" : "#c4c4c4"}
+                                    name="rodent"
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateSpecieFilter('rabbit')}>
+                                <IcPets
+                                    size="25"
+                                    color={specie === 'rabbit' ? "#12baba" : "#c4c4c4"}
+                                    name="rabbit"
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateSpecieFilter('fish')}>
+                                <IcPets
+                                    size="25"
+                                    color={specie === 'fish' ? "#12baba" : "#c4c4c4"}
+                                    name="fish"
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateSpecieFilter('others')}>
+                                <IcPets
+                                    size="25"
+                                    color={specie === 'others' ? "#12baba" : "#c4c4c4"}
+                                    name="others"
+                                />
+                            </button>
+                        </div>
 
-                    <span>Filtrar por genêro</span>
-                    <div className={styles.genderFilterContainer}>
-                        <button onClick={() => handleUpdateGenderFilter('female')}>
-                            <IoMdFemale
-                                size="25"
-                                color={gender === 'female' ? "#12baba" : "#c4c4c4"}
+                        <span className={styles.clearFilterButton} onClick={() => handleUpdateSpecieFilter(null)}>
+                            Limpar filtro
+                        </span>
+
+                        <span>Filtrar por genêro</span>
+                        <div className={styles.genderFilterContainer}>
+                            <button onClick={() => handleUpdateGenderFilter('female')}>
+                                <IoMdFemale
+                                    size="25"
+                                    color={gender === 'female' ? "#12baba" : "#c4c4c4"}
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateGenderFilter('male')}>
+                                <IoMdMale
+                                    size="25"
+                                    color={gender === 'male' ? "#12baba" : "#c4c4c4"}
+                                />
+                            </button>
+                            <button onClick={() => handleUpdateGenderFilter(null)}>
+                                <IoMdMale
+                                    size="14"
+                                    color={!gender ? "#12baba" : "#c4c4c4"}
+                                />
+                                <IoMdFemale
+                                    size="14"
+                                    color={!gender ? "#12baba" : "#c4c4c4"}
+                                />
+                            </button>
+                        </div>
+
+
+                        <span>Filtrar por distância</span>
+                        <div className={styles.distanceFilterContainer}>
+                            <input
+                                type="range"
+                                name="distance"
+                                id="distance"
+                                min="10"
+                                max="90"
+                                value={distance}
+                                onChange={(e) => handleUpdateDistanceFilter(e.target.value)}
                             />
-                        </button>
-                        <button onClick={() => handleUpdateGenderFilter('male')}>
-                            <IoMdMale
-                                size="25"
-                                color={gender === 'male' ? "#12baba" : "#c4c4c4"}
-                            />
-                        </button>
-                        <button onClick={() => handleUpdateGenderFilter(null)}>
-                            <IoMdMale
-                                size="14"
-                                color={!gender ? "#12baba" : "#c4c4c4"}
-                            />
-                            <IoMdFemale
-                                size="14"
-                                color={!gender ? "#12baba" : "#c4c4c4"}
-                            />
-                        </button>
+                        </div>
+                        <span>
+                            {distance} km
+                        </span>
                     </div>
 
-
-                    <span>Filtrar por distância</span>
-                    <div className={styles.distanceFilterContainer}>
-                        <input
-                            type="range"
-                            name="distance"
-                            id="distance"
-                            min="10"
-                            max="90"
-                            value={distance}
-                            onChange={(e) => handleUpdateDistanceFilter(e.target.value)}
-                        />
-                    </div>
-                    <span>
-                        {distance} km
-                    </span>
                 </div>
 
                 <div className={styles.loadMoreContainer}>

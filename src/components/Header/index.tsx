@@ -1,12 +1,18 @@
 import styles from './styles.module.scss';
-import { MdHome, MdFavorite, MdAccountCircle, MdPets, MdExitToApp } from 'react-icons/md';
-import { useContext } from 'react';
+import { MdHome, MdFavorite, MdAccountCircle, MdPets, MdExitToApp, MdMenu, MdClose } from 'react-icons/md';
+import { useContext, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 
 import Link from 'next/link';
 
 export default function Header() {
     const { signOut, user } = useContext(AuthContext);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    const toggleMobileMenu = () => {
+        menuRef.current.classList.toggle(styles.menuContainerMobileOpened);
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.logoContainer}>
@@ -21,7 +27,7 @@ export default function Header() {
                     </div>
                 }
             </div>
-            <div className={styles.menuContainer}>
+            <div className={styles.menuContainer} ref={menuRef}>
                 <Link href="/home">
                     <a>
                         <MdHome size={25} />
@@ -61,6 +67,16 @@ export default function Header() {
                         </a>
                     </Link>
                 }
+                <div className={styles.closeMenu}>
+                    <button onClick={toggleMobileMenu}>
+                        <MdClose size={50} />
+                    </button>
+                </div>
+            </div>
+            <div className={styles.menuIcon}>
+                <button onClick={toggleMobileMenu}>
+                    <MdMenu size={25} />
+                </button>
             </div>
         </div>
     )

@@ -17,6 +17,20 @@
     top: 20%;
     right: 3rem;
     padding: 1.5rem;
+    transition: width 0.5s, height 0.5s;
+    overflow: hidden;
+
+    .filterContent{
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      transition: opacity 2.5s;
+    }
+    
+    .filterMobileIcon{
+      display: none;
+    }
 
     span{
       margin-left: 0.75rem;
@@ -70,6 +84,47 @@
 
       &:hover{
         filter: brightness(0.9);
+      }
+    }
+  }
+}
+
+@media(max-width: 768px){
+  .homeContainer{
+    .filterContainer{
+      height: 3rem;
+      width: 3rem;
+      top:5.5rem;
+      right: 1rem;
+
+      &.filterContainerMobileOpened{
+        height: 31.5rem;
+        width: 15rem;
+
+        .filterContent{
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      .filterMobileIcon{
+        display: flex;
+        height: 100%;
+        align-items: center;
+        width: 100%;
+        justify-content: center;
+  
+        button{
+          border: none;
+          background: transparent;
+          cursor: pointer;
+  
+          color: #fff;
+        }
+      }
+      .filterContent{
+        opacity: 0;
+        visibility: hidden;
       }
     }
   }
