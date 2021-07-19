@@ -113,6 +113,10 @@
             }
 
             a{
+                span{
+                    bottom: 3.85rem;
+                }
+
                 & + a {
                     margin-left: 0;
                     margin-top: 1.5rem;

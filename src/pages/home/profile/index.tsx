@@ -1,9 +1,8 @@
-import { useRouter } from "next/router";
 import Link from 'next/link';
 import { ChangeEvent, useCallback, useContext, useState } from "react";
 import Header from "../../../components/Header";
 import { AuthContext } from "../../../context/AuthContext";
-import { MdEmail, MdPhone, MdEdit, MdCameraAlt } from 'react-icons/md';
+import { MdEmail, MdPhone, MdEdit, MdCameraAlt, MdCancel } from 'react-icons/md';
 
 import styles from './styles.module.scss';
 import { api } from "../../../services/api";
@@ -21,8 +20,6 @@ export default function Profile() {
     const handleUpdateAvatar = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const data = new FormData();
-
-            console.log(e.target.files[0]);
 
             data.append('avatar', e.target.files[0]);
 
@@ -44,8 +41,17 @@ export default function Profile() {
             <Header />
             <div className={styles.profileContent}>
                 <a onClick={() => setIsUpdating(!isUpdating)}>
-                    <MdEdit size={20} />
-                    Editar perfil
+                    {isUpdating ?
+                        <>
+                            <MdCancel size={20} />
+                            Cancelar
+                        </>
+                        :
+                        <>
+                            <MdEdit size={20} />
+                            Editar perfil
+                        </>
+                    }
                 </a>
 
                 <div className={styles.imageContainer}>
