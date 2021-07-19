@@ -1,5 +1,4 @@
-# Love Pets
-## Amor aos animais
+# Love Pets: amor aos animais
 <h2 align="center"> 
  Aplicação para conectar pessoas que desejam doar e ou adotar pets 
 </h2>
@@ -44,6 +43,8 @@ Love pets: amor aos animais, é um projeto que tem como ideia conectar pessoas q
 
 
 ## ℹ️ How To Use
+
+Primeiro, tenha o ambiente [backend](https://github.com/Jefferson00/lovepetsAPIBeta) configurado.
 
 ```bash
 # Clone this repository

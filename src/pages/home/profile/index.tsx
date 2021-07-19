@@ -12,7 +12,7 @@ import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
 
 export default function Profile() {
-    const { user, updateUser } = useContext(AuthContext);
+    const { user, updateUser, signOut } = useContext(AuthContext);
     const { addToast } = useContext(ToastContext);
 
     const [isUpdating, setIsUpdating] = useState(false);
@@ -33,6 +33,17 @@ export default function Profile() {
             });
         }
     }, [addToast]);
+
+    const handleDeleteAccount = useCallback(async () => {
+        if (confirm('Deseja realmente excluir?')) {
+            try {
+                await api.delete('users');
+                signOut();
+            } catch (error) {
+
+            }
+        }
+    }, []);
 
 
 
@@ -73,7 +84,7 @@ export default function Profile() {
                     <Link href="/pets/myFavs">
                         <a>Meus Favoritos</a>
                     </Link>
-                    <a href="">Excluir conta</a>
+                    <a onClick={handleDeleteAccount}>Excluir conta</a>
                 </div>
 
                 {isUpdating ?
