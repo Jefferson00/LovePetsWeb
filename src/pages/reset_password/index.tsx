@@ -38,8 +38,6 @@ export default function ResetPassword() {
 
       const token = router.query.token
 
-      console.log(token)
-
       if (!token) {
         addToast({
           type: 'error',
