@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import Card from "../../../components/Card";
 import Header from "../../../components/Header";
+import Default from "../../../components/Default";
 import { api, getAPIClient } from "../../../services/api";
 import { parseCookies } from "nookies";
 import getDistanceLocation from "../../../utils/getDistanceLocation";
@@ -74,6 +75,9 @@ export default function MyFavs(props: HomeProps) {
     <div>
       <Header />
       <div className={styles.homeContainer}>
+        {myFavs.length === 0 &&
+          <Default type="favs" />
+        }
         {myFavs.map(fav => {
 
           return (

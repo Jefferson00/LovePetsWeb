@@ -1,5 +1,5 @@
 import styles from '../../styles/Home.module.scss';
-import { useCallback, useContext, useRef } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 
 import { FormHandles } from "@unform/core"
 import * as Yup from 'yup';
@@ -25,8 +25,10 @@ export default function FormSignUp() {
   const formRef = useRef<FormHandles>(null)
   const { handleToSignIn } = useContext(AuthContext);
   const { addToast } = useContext(ToastContext);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = useCallback(async (data: SignUpFormData) => {
+    setLoading(true);
     try {
       formRef.current?.setErrors({});
       const schema = Yup.object().shape({
@@ -44,6 +46,8 @@ export default function FormSignUp() {
 
       await api.post('/users', data);
 
+      setLoading(false);
+
       addToast({
         type: 'success',
         title: 'Cadastro realizado!',
@@ -53,6 +57,7 @@ export default function FormSignUp() {
       handleToSignIn();
 
     } catch (error) {
+      setLoading(false);
       if (error instanceof Yup.ValidationError) {
         const errors = getValidationErrors(error);
 
@@ -73,6 +78,7 @@ export default function FormSignUp() {
         message: 'Ocorreu um erro no cadastro, tente novamente.',
       })
     }
+
   }, [addToast])
 
 
@@ -130,6 +136,12 @@ export default function FormSignUp() {
         Já tem uma conta? <strong>Entre</strong>
         <FiLogIn />
       </a>
+
+      {loading &&
+        <div className={styles.loadingModalContainer}>
+          <img src="/loading-dog.gif" alt="carregando" />
+        </div>
+      }
 
     </div>
   )

@@ -21,6 +21,7 @@ import {
 } from 'react-icons/io';
 
 import IcPets from "../../components/Icons/IcPets";
+import Default from "../../components/Default";
 
 interface HomeProps {
     pets: Pets[];
@@ -88,6 +89,7 @@ export default function Home(props: HomeProps) {
     const [gender, setGender] = useState(null);
     const [specie, setSpecie] = useState(null);
     const [hasMoreResults, setHasMoreResults] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     let petsArr: Pets[] = [];
 
@@ -153,6 +155,7 @@ export default function Home(props: HomeProps) {
     }
 
     const loadPets = async () => {
+        setLoading(true);
         const { data } = await api.get('/pets', {
             params: {
                 location_lat: currentLatitude,
@@ -177,6 +180,7 @@ export default function Home(props: HomeProps) {
         } else {
             setPets(petsArr);
         }
+        setLoading(false);
     }
 
     const loadFavs = async () => {
@@ -253,6 +257,9 @@ export default function Home(props: HomeProps) {
         <div>
             <Header />
             <div className={styles.homeContainer}>
+                {(pets.length === 0 && !loading) &&
+                    <Default type="pets" />
+                }
                 {pets.map(pet => {
 
                     return (
@@ -378,6 +385,7 @@ export default function Home(props: HomeProps) {
                     </div>
 
                 </div>
+
 
                 <div className={styles.loadMoreContainer}>
                     {hasMoreResults ?

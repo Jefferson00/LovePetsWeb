@@ -93,6 +93,18 @@
 
                 }    
             }
+
+            .loadingModalContainer{
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #FFF6F6AA;
+            }
         }
     }
 

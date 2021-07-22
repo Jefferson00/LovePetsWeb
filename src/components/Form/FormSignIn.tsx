@@ -1,6 +1,6 @@
 import styles from '../../styles/Home.module.scss';
 import { FormHandles } from "@unform/core"
-import { useCallback, useContext, useEffect, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { AuthContext } from "../../context/AuthContext";
 import { ToastContext } from "../../context/ToastContext";
 import getValidationErrors from "../../utils/getValidationErrors";
@@ -10,116 +10,126 @@ import Input from "../Input";
 import { FiLock, FiLogIn, FiMail } from "react-icons/fi";
 import Button from "../Button";
 
-interface SignInFormData{
-    email: string;
-    password: string;
+interface SignInFormData {
+  email: string;
+  password: string;
 }
 
 export default function FormSignIn() {
-    const formRef = useRef<FormHandles>(null)
-    const {
-      signIn, 
-      handleToSignUp, 
-      handleToForgotPassword, 
-      signInGoogle, 
-      signInFacebook,
-      socialAuthenticationError,
-    } = useContext(AuthContext);
-    const {addToast} = useContext(ToastContext);
+  const formRef = useRef<FormHandles>(null);
+  const [loading, setLoading] = useState(false);
+  const {
+    signIn,
+    handleToSignUp,
+    handleToForgotPassword,
+    signInGoogle,
+    signInFacebook,
+    socialAuthenticationError,
+  } = useContext(AuthContext);
+  const { addToast } = useContext(ToastContext);
 
-    const handleSubmit = useCallback(async (data : SignInFormData)=>{
-        try {
-          formRef.current?.setErrors({});
-          const schema = Yup.object().shape({
-            email: Yup.string().required('E-mail obrigatório!').email('Digite um e-mail válido'),
-            password: Yup.string().required('Senha obrigatória'),
-          })
-    
-          await schema.validate(data, {
-            abortEarly: false,
-          });
-    
-          await signIn({
-            email: data.email,
-            password: data.password,
-          });
-        } catch (error) {
-          if (error instanceof Yup.ValidationError){
-            const errors = getValidationErrors(error);
-    
-            formRef.current?.setErrors(errors);
+  const handleSubmit = useCallback(async (data: SignInFormData) => {
+    setLoading(true);
+    try {
+      formRef.current?.setErrors({});
+      const schema = Yup.object().shape({
+        email: Yup.string().required('E-mail obrigatório!').email('Digite um e-mail válido'),
+        password: Yup.string().required('Senha obrigatória'),
+      })
 
-            addToast({
-              type: 'error',
-              title: 'Erro na autenticação',
-              message: 'Preencha todos os campos corretamente.',
-            })
+      await schema.validate(data, {
+        abortEarly: false,
+      });
 
-            return;
-          }
-    
-          addToast({
-            type: 'error',
-            title: 'Erro na autenticação',
-            message: 'Ocorreu um erro no login, tente novamente.',
-          })
-        }
-      },[addToast]);
+      await signIn({
+        email: data.email,
+        password: data.password,
+      });
 
-      useEffect(()=>{
-        console.log(socialAuthenticationError)
-        if(socialAuthenticationError){
-          addToast({
-            type: 'error',
-            title: 'Erro na autenticação',
-            message: socialAuthenticationError,
-          })
-        }
-      },[socialAuthenticationError]);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error);
 
-    return(
-        <div className={styles.formContent}>
-          <img src="/logo.svg" alt="love pets" />
+        formRef.current?.setErrors(errors);
 
-          <Form ref={formRef} onSubmit={handleSubmit}>
-            <strong>Login</strong>
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          message: 'Preencha todos os campos corretamente.',
+        })
 
-            <Input 
-              name="email" 
-              type="text" 
-              placeholder="e-mail" 
-              icon={FiMail}
-            />
-            <Input 
-              name="password" 
-              type="password" 
-              placeholder="senha" 
-              icon={FiLock}
-            />
+        return;
+      }
 
-            <a onClick={handleToForgotPassword}>Esqueci minha senha</a>
+      addToast({
+        type: 'error',
+        title: 'Erro na autenticação',
+        message: 'Ocorreu um erro no login, tente novamente.',
+      })
+    }
+  }, [addToast]);
 
-            <Button type="submit">
-              Entrar
-            </Button>
+  useEffect(() => {
+    if (socialAuthenticationError) {
+      addToast({
+        type: 'error',
+        title: 'Erro na autenticação',
+        message: socialAuthenticationError,
+      });
+    }
+  }, [socialAuthenticationError]);
 
-          </Form>
+  return (
+    <div className={styles.formContent}>
+      <img src="/logo.svg" alt="love pets" />
 
-          <a onClick={handleToSignUp}>
-            Não tem uma conta? <strong>Cadastre-se</strong>
-            <FiLogIn/>
-          </a>
+      <Form ref={formRef} onSubmit={handleSubmit}>
+        <strong>Login</strong>
 
-          <Button type="button" title="google" onClick={signInGoogle}>
-              <img src="/Google.svg" alt="gmail" />
-              Entrar com o Gmail
-          </Button>
+        <Input
+          name="email"
+          type="text"
+          placeholder="e-mail"
+          icon={FiMail}
+        />
+        <Input
+          name="password"
+          type="password"
+          placeholder="senha"
+          icon={FiLock}
+        />
 
-          <Button type="button" title="facebook" onClick={signInFacebook}>
-              <img src="/Facebook.svg" alt="facebook" />
-              Entrar com o Facebook
-          </Button>
+        <a onClick={handleToForgotPassword}>Esqueci minha senha</a>
 
+        <Button type="submit">
+          Entrar
+        </Button>
+
+      </Form>
+
+      <a onClick={handleToSignUp}>
+        Não tem uma conta? <strong>Cadastre-se</strong>
+        <FiLogIn />
+      </a>
+
+      <Button type="button" title="google" onClick={signInGoogle}>
+        <img src="/Google.svg" alt="gmail" />
+        Entrar com o Gmail
+      </Button>
+
+      <Button type="button" title="facebook" onClick={signInFacebook}>
+        <img src="/Facebook.svg" alt="facebook" />
+        Entrar com o Facebook
+      </Button>
+
+      {loading &&
+        <div className={styles.loadingModalContainer}>
+          <img src="/loading-cat.gif" alt="carregando" />
         </div>
-    )
+      }
+
+    </div>
+  )
 }
