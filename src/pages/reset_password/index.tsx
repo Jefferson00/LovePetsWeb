@@ -1,4 +1,5 @@
 import styles from './styles.module.scss';
+import Head from 'next/head';
 
 import { FormHandles } from '@unform/core';
 import { useCallback, useContext, useRef } from 'react';
@@ -86,6 +87,9 @@ export default function ResetPassword() {
 
   return (
     <div className={styles.container}>
+      <Head>
+        <title>Recuperar Senha | LovePets Amor aos animais</title>
+      </Head>
 
       <div className={styles.formContent}>
         <img src="/logo.svg" alt="love pets" />

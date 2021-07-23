@@ -1,4 +1,5 @@
 import styles from '../styles/Home.module.scss';
+import Head from 'next/head';
 
 import FormSignIn from '../components/Form/FormSignIn';
 import FormSignUp from '../components/Form/FormSignUp';
@@ -23,6 +24,9 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
+      <Head>
+        <title>LovePets Amor aos animais</title>
+      </Head>
 
       <section className={styles.formContainer}>
         <div className={styles.mobileTitle}>

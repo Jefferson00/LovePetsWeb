@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from 'next/head';
 import { useEffect, useState } from "react";
 import Card from "../../../components/Card";
 import Header from "../../../components/Header";
@@ -68,6 +69,9 @@ export default function MyPets(props: HomeProps) {
 
   return (
     <div>
+      <Head>
+        <title>Meus Pets | LovePets Amor aos animais</title>
+      </Head>
       <Header />
       <div className={styles.homeContainer}>
         {myPets.length === 0 &&

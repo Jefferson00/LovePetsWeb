@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Head from 'next/head';
 import { ChangeEvent, useCallback, useContext, useState } from "react";
 import Header from "../../../components/Header";
 import { AuthContext } from "../../../context/AuthContext";
@@ -49,6 +50,9 @@ export default function Profile() {
 
     return (
         <div className={styles.container}>
+            <Head>
+                <title>Perfil | LovePets Amor aos animais</title>
+            </Head>
             <Header />
             <div className={styles.profileContent}>
                 <a onClick={() => setIsUpdating(!isUpdating)}>

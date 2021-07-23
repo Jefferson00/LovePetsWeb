@@ -292,6 +292,9 @@ export default function Card({ pet, itsMyPet, fav, itsFav, onDelete, toggleFav }
                 className={styles.reportModal}
                 contentLabel="Por que você está denunciando esse anúncio?"
                 style={{
+                    overlay: {
+                        zIndex: 999,
+                    },
                     content: {
                         top: '50%',
                         left: '50%',

@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next"
+import Head from 'next/head';
 import { getAPIClient } from "../../services/api";
 
 import getDistanceLocation from "../../utils/getDistanceLocation";
@@ -51,6 +52,9 @@ export default function Pets(props: PetsProps) {
 
   return (
     <div>
+      <Head>
+        <title>LovePets Amor aos animais</title>
+      </Head>
       <Header />
       <div className={styles.container}>
         <Card

@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import Head from 'next/head';
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { api } from "../../services/api";
@@ -255,6 +256,9 @@ export default function Home(props: HomeProps) {
 
     return (
         <div>
+            <Head>
+                <title>LovePets Amor aos animais</title>
+            </Head>
             <Header />
             <div className={styles.homeContainer}>
                 {(pets.length === 0 && !loading) &&
