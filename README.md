@@ -1,5 +1,5 @@
 <h3 align="center">
-  <img alt="Lovepets" title="Lovepets" src=".github/logo.svg" height="150px"/>
+  <img alt="Lovepets" title="Lovepets" src=".github/logo.svg" height="100px" width="100px"/>
 </h3>
 
 <h2 align="center">
