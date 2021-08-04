@@ -213,7 +213,7 @@ export const AuthProvider = ({ children }) => {
                         email: user.email,
                         phone: user.phoneNumber ? user.phoneNumber : uuid(),
                         password: user.uid, //verificar se é seguro
-                        avatar: user.photoURL + `?type=large?access_token=${token}`,
+                        avatar: user.photoURL + `?type=large`,
                     }
 
                     createAndUpdateUser(data);
