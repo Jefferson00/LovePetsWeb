@@ -11,6 +11,8 @@ import { ToastContext } from "../../../context/ToastContext";
 import FormUpdateProfile from "../../../components/Form/FormUpdateProfile";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
+import { isUuid } from "uuidv4";
+import firebase from '../../../lib/firebase';
 
 export default function Profile() {
     const { user, updateUser, signOut } = useContext(AuthContext);
@@ -39,9 +41,10 @@ export default function Profile() {
         if (confirm('Deseja realmente excluir?')) {
             try {
                 await api.delete('users');
+                await firebase.auth().currentUser.delete();
                 signOut();
             } catch (error) {
-
+                console.log(error)
             }
         }
     }, []);
@@ -107,7 +110,7 @@ export default function Profile() {
                             </span>
                             <span>
                                 <MdPhone size={30} />
-                                <p>{user?.phone}</p>
+                                <p>{isUuid(user?.phone) ? '' : user?.phone}</p>
                             </span>
                         </div>
                     </div>

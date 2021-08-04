@@ -3,7 +3,8 @@ import { api } from '../services/api';
 import firebase from '../lib/firebase';
 import { useRouter } from 'next/router';
 import { ToastContext } from './ToastContext';
-import { setCookie, destroyCookie } from 'nookies';
+import { setCookie, destroyCookie, parseCookies } from 'nookies';
+import { uuid } from 'uuidv4';
 
 interface AuthResponseProps extends firebase.auth.AuthCredential {
     accessToken: string;
@@ -69,14 +70,16 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('@LovePetsBeta:token');
         const user = localStorage.getItem('@LovePetsBeta:user');
 
-        if (token && user) {
+        const { ['@LovePetsBeta:token']: tokenCookie } = parseCookies();
+
+        if (token && user && tokenCookie) {
             api.defaults.headers.authorization = `Bearer ${token}`;
             setAuthData({ token, user: JSON.parse(user) });
         } else {
             api.defaults.headers.authorization = null;
-            setAuthData({ token: null, user: null })
+            setAuthData({ token: null, user: null });
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (authData.user !== undefined || authData.user === null) {
@@ -164,7 +167,7 @@ export const AuthProvider = ({ children }) => {
                 updateUser(response.data);
             }
         } catch (error) {
-            //setSocialAuthenticationError(error.message);
+            setSocialAuthenticationError(error.message);
         }
     }, [signIn])
 
@@ -176,13 +179,13 @@ export const AuthProvider = ({ children }) => {
                 .signInWithPopup(new firebase.auth.GoogleAuthProvider())
                 .then((response: ResponseFirebaseProps) => {
                     const user = response.user;
-
+                    console.log(user.uid)
                     const data: SignUpData = {
                         name: user.displayName,
                         email: user.email,
-                        phone: user.phoneNumber ? user.phoneNumber : '',
+                        phone: user.phoneNumber ? user.phoneNumber : uuid(),
                         password: user.uid, //verificar se é seguro
-                        avatar: user.photoURL,
+                        avatar: user.photoURL ? user.photoURL : null,
                     }
 
                     createAndUpdateUser(data);
@@ -205,10 +208,12 @@ export const AuthProvider = ({ children }) => {
                     const token = response.credential.accessToken;
                     const user = response.user;
 
+                    console.log(user)
+
                     const data: SignUpData = {
                         name: user.displayName,
                         email: user.email,
-                        phone: user.phoneNumber ? user.phoneNumber : '',
+                        phone: user.phoneNumber ? user.phoneNumber : uuid(),
                         password: user.uid, //verificar se é seguro
                         avatar: user.photoURL + `?access_token=${token}`,
                     }

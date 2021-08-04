@@ -14,6 +14,7 @@ import Input from "../Input";
 import Button from "../Button";
 import { api } from '../../services/api';
 import { useRouter } from 'next/router';
+import { isUuid } from 'uuidv4';
 
 interface SignUpFormData {
   email: string;
@@ -112,7 +113,7 @@ export default function FormUpdateProfile() {
         initialData={{
           email: user.email,
           name: user.name,
-          phone: user.phone,
+          phone: isUuid(user.phone) ? '' : user.phone,
         }}
         ref={formRef}
         onSubmit={handleSubmit}>
