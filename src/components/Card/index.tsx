@@ -236,7 +236,7 @@ export default function Card({ pet, itsMyPet, fav, itsFav, onDelete, toggleFav }
                             <RWebShare
                                 data={{
                                     text: 'Olha só, esse pet fofinho precisa de um novo lar. 😍🥺 ',
-                                    url: `http://localhost:3000/pets/${pet.id}`,
+                                    url: `${process.env.NEXT_PUBLIC_WEB_URL}pets/${pet.id}`,
                                     title: 'Love pets',
                                 }}
                             >
