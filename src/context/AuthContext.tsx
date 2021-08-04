@@ -179,7 +179,7 @@ export const AuthProvider = ({ children }) => {
                 .signInWithPopup(new firebase.auth.GoogleAuthProvider())
                 .then((response: ResponseFirebaseProps) => {
                     const user = response.user;
-                    console.log(user.uid)
+
                     const data: SignUpData = {
                         name: user.displayName,
                         email: user.email,
@@ -208,14 +208,12 @@ export const AuthProvider = ({ children }) => {
                     const token = response.credential.accessToken;
                     const user = response.user;
 
-                    console.log(user)
-
                     const data: SignUpData = {
                         name: user.displayName,
                         email: user.email,
                         phone: user.phoneNumber ? user.phoneNumber : uuid(),
                         password: user.uid, //verificar se é seguro
-                        avatar: user.photoURL + `?access_token=${token}`,
+                        avatar: user.photoURL + `?type=large?access_token=${token}`,
                     }
 
                     createAndUpdateUser(data);
