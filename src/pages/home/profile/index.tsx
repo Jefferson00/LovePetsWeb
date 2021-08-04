@@ -41,7 +41,9 @@ export default function Profile() {
         if (confirm('Deseja realmente excluir?')) {
             try {
                 await api.delete('users');
-                await firebase.auth().currentUser.delete();
+                if (firebase.auth().currentUser) {
+                    await firebase.auth().currentUser.delete();
+                }
                 signOut();
             } catch (error) {
                 console.log(error)

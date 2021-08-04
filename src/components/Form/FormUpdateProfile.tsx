@@ -158,6 +158,8 @@ export default function FormUpdateProfile() {
           type="text"
           placeholder="(00) 0000-0000"
           icon={FiPhone}
+          isMasked
+          mask="99 99999 9999"
         />
 
         <div className={styles.buttonContainer}>

@@ -29,6 +29,7 @@ export default function FormSignUp() {
 
   const handleSubmit = useCallback(async (data: SignUpFormData) => {
     setLoading(true);
+    console.log(data)
     try {
       formRef.current?.setErrors({});
       const schema = Yup.object().shape({
@@ -122,6 +123,8 @@ export default function FormSignUp() {
           type="text"
           placeholder="(00) 0000-0000"
           icon={FiPhone}
+          isMasked
+          mask="99 99999 9999"
         />
 
         <div className={styles.buttonContainer}>
