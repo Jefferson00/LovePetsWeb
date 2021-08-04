@@ -71,6 +71,16 @@ export default function FormSignIn() {
     }
   }, [addToast]);
 
+  const handleLoginGoogle = useCallback(() => {
+    setLoading(true);
+    signInGoogle();
+  }, [signInGoogle]);
+
+  const handleLoginFacebook = useCallback(() => {
+    setLoading(true);
+    signInFacebook();
+  }, [signInFacebook]);
+
   useEffect(() => {
     if (socialAuthenticationError) {
       addToast({
@@ -78,6 +88,7 @@ export default function FormSignIn() {
         title: 'Erro na autenticação',
         message: socialAuthenticationError,
       });
+      setLoading(false);
     }
   }, [socialAuthenticationError]);
 
@@ -114,12 +125,12 @@ export default function FormSignIn() {
         <FiLogIn />
       </a>
 
-      <Button type="button" title="google" onClick={signInGoogle}>
+      <Button type="button" title="google" onClick={handleLoginGoogle}>
         <img src="/Google.svg" alt="gmail" />
         Entrar com o Gmail
       </Button>
 
-      <Button type="button" title="facebook" onClick={signInFacebook}>
+      <Button type="button" title="facebook" onClick={handleLoginFacebook}>
         <img src="/Facebook.svg" alt="facebook" />
         Entrar com o Facebook
       </Button>

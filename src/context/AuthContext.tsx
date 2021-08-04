@@ -88,6 +88,8 @@ export const AuthProvider = ({ children }) => {
     }, [authData.user])
 
     const signIn = useCallback(async ({ email, password }) => {
+        setSocialAuthenticationError(null);
+
         const response = await api.post('sessions', {
             email,
             password,
@@ -193,7 +195,10 @@ export const AuthProvider = ({ children }) => {
                     console.log('errr' + error)
                     setSocialAuthenticationError(error.message);
                 })
-        } finally {
+        } catch (error) {
+            return error
+        }
+        finally {
             setLoading(false);
         }
     }, [])
@@ -221,9 +226,11 @@ export const AuthProvider = ({ children }) => {
                     console.log('errr' + error)
                     setSocialAuthenticationError(error.message);
                 })
-        } finally {
+        } catch (error) {
+            return error
+        }
+        finally {
             setLoading(false);
-            setSocialAuthenticationError(null);
         }
     }, [])
 
